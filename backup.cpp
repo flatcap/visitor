@@ -20,12 +20,19 @@
 #include <string>
 #include <memory>
 #include <sstream>
+#include <typeinfo>
 
 #include <unistd.h>
 
 class Container;
+class Disk;
+class Partition;
+class Filesystem;
 
-typedef std::shared_ptr<Container> CPtr;
+typedef std::shared_ptr<Container>  CPtr;
+typedef std::shared_ptr<Disk>       DPtr;
+typedef std::shared_ptr<Partition>  PPtr;
+typedef std::shared_ptr<Filesystem> FPtr;
 
 std::vector<CPtr> pool;
 
@@ -56,10 +63,15 @@ public:
 	virtual ~Container()
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
-		for (auto c : children) {
-			//std::cout << "delete " << c << "(" << c->name << ")" << std::endl;
-			delete c;
-		}
+	}
+
+	static CPtr create (void)
+	{
+		CPtr c (new Container);
+
+		pool.push_back(c);
+
+		return c;
 	}
 
 	void *
@@ -67,9 +79,9 @@ public:
 	{
 		Container *c = (Container*) malloc (size);
 
+#if 0
 		std::cout << "new object " << c << std::endl;
-
-		pool.push_back(CPtr(c));
+#endif
 
 		return c;
 	}
@@ -80,9 +92,10 @@ public:
 		if (!ptr)
 			return;
 
+#if 0
 		Container *c = (Container *) (ptr);
-
 		std::cout << "delete object " << c << std::endl;
+#endif
 
 		free (ptr);
 	}
@@ -105,7 +118,7 @@ public:
 		return seqnum;
 	}
 
-	int add_child (Container *child)
+	int add_child (CPtr child)
 	{
 		children.push_back (child);
 		changed();
@@ -114,7 +127,7 @@ public:
 
 	std::string name;
 
-	std::vector<Container*> get_children (void)
+	std::vector<CPtr> get_children (void)
 	{
 		return children;
 	}
@@ -128,7 +141,7 @@ protected:
 private:
 	int size;
 	int seqnum;
-	std::vector<Container*> children;
+	std::vector<CPtr> children;
 };
 
 /**
@@ -146,6 +159,15 @@ public:
 	virtual ~Disk()
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	static DPtr create (void)
+	{
+		DPtr d (new Disk);
+
+		pool.push_back(d);
+
+		return d;
 	}
 
 	std::string get_device (void)
@@ -183,6 +205,15 @@ public:
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
+	static PPtr create (void)
+	{
+		PPtr p (new Partition);
+
+		pool.push_back(p);
+
+		return p;
+	}
+
 	int get_id (void)
 	{
 		return id;
@@ -215,6 +246,15 @@ public:
 	virtual ~Filesystem()
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	static FPtr create (void)
+	{
+		FPtr f (new Filesystem);
+
+		pool.push_back(f);
+
+		return f;
 	}
 
 	std::string get_label (void)
@@ -346,7 +386,7 @@ dot_row (const char *name, const std::stringstream &value)
 	return output.str();
 }
 
-/**
+/**main
  * dot_row (char *)
  */
 std::string
@@ -402,10 +442,10 @@ dot_row (const char *name, void *value)
 }
 
 /**
- * dot_row (Container *)
+ * dot_row (CPtr &)
  */
 std::string
-dot_row (const char *name, Container *value)
+dot_row (const char *name, const CPtr &value)
 {
 	std::stringstream output;
 	std::string dest;
@@ -414,7 +454,7 @@ dot_row (const char *name, Container *value)
 	output << "<td align=\"left\">" << name << "</td>";
 	output << "<td>=</td>";
 	if (value) {
-		output << "<td align=\"left\">" << (void*) value << dest << "</td>";
+		output << "<td align=\"left\">" << value << dest << "</td>";
 	} else {
 		output << "<td align=\"left\">NULL</td>";
 	}
@@ -428,7 +468,7 @@ dot_row (const char *name, Container *value)
  * dot_container
  */
 std::string
-dot_container (Container *c)
+dot_container (const CPtr &c)
 {
 	std::stringstream output;
 
@@ -443,12 +483,16 @@ dot_container (Container *c)
  * dot_disk
  */
 std::string
-dot_disk (Disk *d)
+dot_disk (const CPtr &c)
 {
 	std::stringstream output;
 
-	output << dot_container (dynamic_cast<Container *> (d));
+	output << dot_container (c);
 
+	Disk *d = dynamic_cast<Disk*>(c.get());
+#if 0
+	const DPtr d = dynamic_cast<const DPtr>(c);
+#endif
 	output << dot_row ("device", d->get_device());
 
 	return output.str();
@@ -458,13 +502,17 @@ dot_disk (Disk *d)
  * dot_partition
  */
 std::string
-dot_partition (Partition *p)
+dot_partition (const CPtr &c)
 {
 	std::stringstream output;
 
-	output << dot_container(dynamic_cast<Partition *> (p));
+	output << dot_container (c);
+
+#if 0
+	const PPtr p (dynamic_cast<Partition*>(c.get()));
 
 	output << dot_row ("id", p->get_id());
+#endif
 
 	return output.str();
 }
@@ -473,13 +521,17 @@ dot_partition (Partition *p)
  * dot_filesystem
  */
 std::string
-dot_filesystem (Filesystem *f)
+dot_filesystem (const CPtr &c)
 {
 	std::stringstream output;
 
-	output << dot_container(dynamic_cast<Container *> (f));
+	output << dot_container (c);
+
+#if 0
+	const FPtr f (dynamic_cast<Filesystem*>(c.get()));
 
 	output << dot_row ("label", f->get_label());
+#endif
 
 	return output.str();
 }
@@ -489,7 +541,7 @@ dot_filesystem (Filesystem *f)
  * dump_dot_inner
  */
 std::string
-dump_dot_inner (const std::vector <Container*> &v)
+dump_dot_inner (const std::vector <CPtr> &v)
 {
 	std::stringstream dot;
 
@@ -507,17 +559,17 @@ dump_dot_inner (const std::vector <Container*> &v)
 		else
 			colour = "#d0d080";
 
-		dot << "obj_" << (void*) c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\">\n";
-		dot << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" << c->name << "</b></font> (" << (void*) c << ")</td></tr>\n";
+		dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\">\n";
+		dot << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" << c->name << "</b></font> (" << c << ")</td></tr>\n";
 
-		     if (name == "disk")          { dot << dot_disk          (dynamic_cast<Disk         *> (c)); }
-		else if (name == "filesystem")    { dot << dot_filesystem    (dynamic_cast<Filesystem   *> (c)); }
-		else if (name == "partition")     { dot << dot_partition     (dynamic_cast<Partition    *> (c)); }
+		     if (name == "disk")          { dot << dot_disk       (c); }
+		else if (name == "filesystem")    { dot << dot_filesystem (c); }
+		else if (name == "partition")     { dot << dot_partition  (c); }
 
 		dot << "</table>>];\n";
 
 		for (auto c2 : c->get_children()) {
-			dot << "obj_" << (void*) c << " -> obj_" << (void*) c2 << ";\n";
+			dot << "obj_" << c << " -> obj_" << c2 << ";\n";
 		}
 
 		dot << dump_dot_inner (c->get_children());
@@ -530,7 +582,7 @@ dump_dot_inner (const std::vector <Container*> &v)
  * dump_dot
  */
 std::string
-dump_dot (std::vector <Container*> v)
+dump_dot (const std::vector <CPtr> &v)
 {
 	std::stringstream dot;
 
@@ -552,15 +604,15 @@ dump_dot (std::vector <Container*> v)
  * display_dot
  */
 void
-display_dot (std::vector <Container*> v)
+display_dot (const std::vector <CPtr> &v)
 {
 	if (v.size() == 0)
 		return;
 
 	std::string input = dump_dot(v);
-	//std::cout << input << std::endl;
+	std::cout << input << std::endl;
 
-	execute_command ("dot -Tpng | display -resize 60% - &", input);
+	//execute_command ("dot -Tpng | display -resize 60% - &", input);
 }
 
 
@@ -569,11 +621,17 @@ display_dot (std::vector <Container*> v)
  */
 int main (int, char *[])
 {
-	std::vector <Container*> v;
+	std::vector <CPtr> v;
 
-	Disk       *d = new Disk();
-	Partition  *p = new Partition();
-	Filesystem *f = new Filesystem();
+	DPtr d = Disk::create();
+	PPtr p = Partition::create();
+	FPtr f = Filesystem::create();
+
+	std::cout << typeid (d).name() << std::endl;
+	std::cout << typeid (p).name() << std::endl;
+	std::cout << typeid (f).name() << std::endl;
+
+	std::cout << std::endl;
 
 	d->set_size   (1234);
 	d->set_device ("/dev/loop0");
@@ -592,13 +650,14 @@ int main (int, char *[])
 	std::cout
 		<< d << "(" << d->name << "), "
 		<< p << "(" << p->name << "), "
-		<< f << "(" << f->name << ")\n";
+		<< f << "(" << f->name << ")" << std::endl;
 #endif
 
-	display_dot (v);
+	for (auto p : pool) {
+		std::cout << p->name << ":" << p.use_count() << ":" << typeid (p).name() << std::endl;
+	}
 
-	//std::cout << "delete " << d << "(" << d->name << ")" << std::endl;
-	//delete d;
+	//display_dot (v);
 
 	return 0;
 }

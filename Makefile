@@ -95,7 +95,7 @@ $(DEPDIR) $(OBJDIR):
 # ----------------------------------------------------------------------------
 
 clean:	force
-	$(RM) $(OUT) $(OBJ) gmon.out
+	$(RM) $(OUT) $(OBJ)
 
 distclean: clean
 	$(RM) $(DEPDIR) $(OBJDIR) tags html

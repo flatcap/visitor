@@ -42,8 +42,13 @@ std::vector<CPtr> pool;
 class Backup
 {
 public:
-	void backup (void);
-	void restore (void);
+	void backup (void)
+	{
+	}
+
+	void restore (void)
+	{
+	}
 };
 
 /**
@@ -549,9 +554,9 @@ dump_dot_inner (const std::vector <CPtr> &v)
 		if (name == "disk")
 			colour = "#ffc0c0";
 		else if (name == "partition")
-			colour = "#80c080";
-		else
 			colour = "#d0d080";
+		else
+			colour = "#80c080";
 
 		dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\">\n";
 		dot << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" << c->name << "</b></font> (" << c << ")</td></tr>\n";
@@ -598,7 +603,7 @@ dump_dot (const std::vector <CPtr> &v)
  * display_dot
  */
 void
-display_dot (const std::vector <CPtr> &v)
+display_dot (const std::vector <CPtr> &v, int offset)
 {
 	if (v.size() == 0)
 		return;
@@ -606,7 +611,61 @@ display_dot (const std::vector <CPtr> &v)
 	std::string input = dump_dot(v);
 	//std::cout << input << std::endl;
 
-	execute_command ("dot -Tpng | display -resize 60% - &", input);
+	int screen_x = -1366 - (offset*400);
+
+	std::string command = "dot -Tpng | display -title objects -gravity NorthEast -geometry " + std::to_string(screen_x) + "-40 -resize 70% - &";
+
+	execute_command (command, input);
+}
+
+
+/**
+ * display_pool
+ */
+void
+display_pool (int offset)
+{
+	if (pool.size() == 0)
+		return;
+
+	std::stringstream dot;
+
+	dot << "digraph disks {\n";
+	dot << "graph [ rankdir=\"LR\", color=\"white\",bgcolor=\"#000000\" ];\n";
+	dot << "node [ shape=\"record\", color=\"black\", fillcolor=\"lightcyan\", style=\"filled\" ];\n";
+	dot << "edge [ penwidth=3.0,color=\"#cccccc\" ];\n";
+	dot << "\n";
+
+	for (auto p : pool) {
+		std::string name = p->name;
+
+		dot << "\n";
+		dot << "// " << p << "\n";
+
+		std::string colour;
+		if (name == "disk")
+			colour = "#ffc0c0";
+		else if (name == "partition")
+			colour = "#d0d080";
+		else
+			colour = "#80c080";
+
+		dot << "obj_" << p << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\">\n";
+		dot << "<tr><td align=\"left\" colspan=\"3\"><font color=\"#000000\" point-size=\"16\"><b>" << p << "</b></font> (" << p->get_seqnum() << ")</td></tr>\n";
+		dot << "</table>>];\n";
+	}
+
+	dot << "\n}";
+	dot << "\n";
+
+	std::string input = dot.str();
+	//std::cout << input << std::endl;
+
+	int screen_x = -1366 - (offset*400);
+
+	std::string command = "dot -Tpng | display -title objects -gravity NorthEast -geometry " + std::to_string(screen_x) + "+0 -resize 70% - &";
+
+	execute_command (command, input);
 }
 
 
@@ -617,68 +676,40 @@ int main (int, char *[])
 {
 	std::vector <CPtr> v;
 
-	DPtr d = Disk::create();
-	PPtr p = Partition::create();
-	FPtr f = Filesystem::create();
-
-	std::cout << typeid (d).name() << std::endl;
-	std::cout << typeid (p).name() << std::endl;
-	std::cout << typeid (f).name() << std::endl;
-
-	std::cout << std::endl;
+	DPtr d  = Disk::create();
+	PPtr p1 = Partition::create();
+	PPtr p2 = Partition::create();
+	FPtr f1 = Filesystem::create();
+	FPtr f2 = Filesystem::create();
 
 	d->set_size   (1234);
 	d->set_device ("/dev/loop0");
 
-	p->set_size   (632);
-	p->set_id     (3);
+	p1->set_size   (632);
+	p1->set_id     (2);
 
-	f->set_size   (630);
-	f->set_label  ("wibble");
+	p2->set_size   (243);
+	p2->set_id     (4);
+
+	f1->set_size   (630);
+	f1->set_label  ("wibble");
+
+	f2->set_size   (240);
+	f2->set_label  ("hatstand");
 
 	v.push_back (d);
-	d->add_child (p);
-	p->add_child (f);
+	d->add_child (p1);
+	d->add_child (p2);
+	p1->add_child (f1);
+	p2->add_child (f2);
 
-#if 1
-	std::cout
-		<< d << "(" << d->name << "), "
-		<< p << "(" << p->name << "), "
-		<< f << "(" << f->name << ")" << std::endl;
-#endif
+	display_dot (v, 0);
+	display_pool(0);
 
-	for (auto p : pool) {
-		std::cout << p->name << ":" << p.use_count() << ":" << typeid (p).name() << std::endl;
-	}
+	f2->set_label ("new label");
 
-	display_dot (v);
-
-	std::cout << std::endl;
-
-	std::cout << typeid (d).name() << std::endl;
-	std::cout << typeid (p).name() << std::endl;
-	std::cout << typeid (f).name() << std::endl;
-
-	std::cout << std::endl;
-
-	pool.push_back (d);
-	pool.push_back (p);
-
-	DPtr d2 = std::dynamic_pointer_cast<Disk>      (pool[0]);
-	PPtr p2 = std::dynamic_pointer_cast<Partition> (pool[0]);
-
-	std::cout << typeid (d2).name() << ":" << d2 << std::endl;
-	std::cout << typeid (p2).name() << ":" << p2 << std::endl;
-
-	std::cout << std::endl;
-
-	DPtr d3 = std::dynamic_pointer_cast<Disk>      (pool[1]);
-	PPtr p3 = std::dynamic_pointer_cast<Partition> (pool[1]);
-
-	std::cout << typeid (d3).name() << ":" << d3 << std::endl;
-	std::cout << typeid (p3).name() << ":" << p3 << std::endl;
-
-	std::cout << std::endl;
+	display_dot (v, 1);
+	display_pool(1);
 
 	return 0;
 }

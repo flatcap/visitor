@@ -489,10 +489,8 @@ dot_disk (const CPtr &c)
 
 	output << dot_container (c);
 
-	Disk *d = dynamic_cast<Disk*>(c.get());
-#if 0
-	const DPtr d = dynamic_cast<const DPtr>(c);
-#endif
+	DPtr d = std::dynamic_pointer_cast<Disk> (c);
+
 	output << dot_row ("device", d->get_device());
 
 	return output.str();
@@ -508,11 +506,9 @@ dot_partition (const CPtr &c)
 
 	output << dot_container (c);
 
-#if 0
-	const PPtr p (dynamic_cast<Partition*>(c.get()));
+	PPtr p = std::dynamic_pointer_cast<Partition> (c);
 
 	output << dot_row ("id", p->get_id());
-#endif
 
 	return output.str();
 }
@@ -527,11 +523,9 @@ dot_filesystem (const CPtr &c)
 
 	output << dot_container (c);
 
-#if 0
-	const FPtr f (dynamic_cast<Filesystem*>(c.get()));
+	FPtr f = std::dynamic_pointer_cast<Filesystem> (c);
 
 	output << dot_row ("label", f->get_label());
-#endif
 
 	return output.str();
 }
@@ -610,9 +604,9 @@ display_dot (const std::vector <CPtr> &v)
 		return;
 
 	std::string input = dump_dot(v);
-	std::cout << input << std::endl;
+	//std::cout << input << std::endl;
 
-	//execute_command ("dot -Tpng | display -resize 60% - &", input);
+	execute_command ("dot -Tpng | display -resize 60% - &", input);
 }
 
 
@@ -646,7 +640,7 @@ int main (int, char *[])
 	d->add_child (p);
 	p->add_child (f);
 
-#if 0
+#if 1
 	std::cout
 		<< d << "(" << d->name << "), "
 		<< p << "(" << p->name << "), "
@@ -657,7 +651,7 @@ int main (int, char *[])
 		std::cout << p->name << ":" << p.use_count() << ":" << typeid (p).name() << std::endl;
 	}
 
-	//display_dot (v);
+	display_dot (v);
 
 	std::cout << std::endl;
 

@@ -659,6 +659,33 @@ int main (int, char *[])
 
 	//display_dot (v);
 
+	std::cout << std::endl;
+
+	std::cout << typeid (d).name() << std::endl;
+	std::cout << typeid (p).name() << std::endl;
+	std::cout << typeid (f).name() << std::endl;
+
+	std::cout << std::endl;
+
+	pool.push_back (d);
+	pool.push_back (p);
+
+	DPtr d2 = std::dynamic_pointer_cast<Disk>      (pool[0]);
+	PPtr p2 = std::dynamic_pointer_cast<Partition> (pool[0]);
+
+	std::cout << typeid (d2).name() << ":" << d2 << std::endl;
+	std::cout << typeid (p2).name() << ":" << p2 << std::endl;
+
+	std::cout << std::endl;
+
+	DPtr d3 = std::dynamic_pointer_cast<Disk>      (pool[1]);
+	PPtr p3 = std::dynamic_pointer_cast<Partition> (pool[1]);
+
+	std::cout << typeid (d3).name() << ":" << d3 << std::endl;
+	std::cout << typeid (p3).name() << ":" << p3 << std::endl;
+
+	std::cout << std::endl;
+
 	return 0;
 }
 

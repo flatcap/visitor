@@ -42,13 +42,40 @@ std::vector<CPtr> pool;
 class Backup
 {
 public:
-	void backup (void)
+	Backup() :
+		seqnum(1)
 	{
 	}
 
-	void restore (void)
+	virtual ~Backup()
 	{
 	}
+
+	virtual void backup (void)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		seqnum = (seqnum+100)/100*100;
+	}
+
+	virtual void restore (void)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		seqnum = (seqnum+100)/100*100;
+	}
+
+	int get_seqnum (void)
+	{
+		return seqnum;
+	}
+
+protected:
+	void changed (void)
+	{
+		seqnum++;
+	}
+
+private:
+	int seqnum;
 };
 
 /**
@@ -58,16 +85,26 @@ class Container : public Backup
 {
 public:
 	Container (void) :
-		size(0),
-		seqnum(1)
+		size(0)
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
-		name = "Container";
 	}
 
 	virtual ~Container()
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual void backup (void)
+	{
+		Backup::backup();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual void restore (void)
+	{
+		Backup::restore();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
 	static CPtr create (void)
@@ -118,11 +155,6 @@ public:
 		return old;
 	}
 
-	int get_seqnum (void)
-	{
-		return seqnum;
-	}
-
 	int add_child (CPtr child)
 	{
 		children.push_back (child);
@@ -137,15 +169,8 @@ public:
 		return children;
 	}
 
-protected:
-	void changed (void)
-	{
-		seqnum++;
-	}
-
 private:
 	int size;
-	int seqnum;
 	std::vector<CPtr> children;
 };
 
@@ -164,6 +189,18 @@ public:
 	virtual ~Disk()
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual void backup (void)
+	{
+		Container::backup();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual void restore (void)
+	{
+		Container::restore();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
 	static DPtr create (void)
@@ -210,6 +247,18 @@ public:
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
+	virtual void backup (void)
+	{
+		Container::backup();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual void restore (void)
+	{
+		Container::restore();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
 	static PPtr create (void)
 	{
 		PPtr p (new Partition);
@@ -251,6 +300,18 @@ public:
 	virtual ~Filesystem()
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual void backup (void)
+	{
+		Container::backup();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual void restore (void)
+	{
+		Container::restore();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
 	static FPtr create (void)
@@ -548,7 +609,7 @@ dump_dot_inner (const std::vector <CPtr> &v)
 		std::string name = c->name;
 
 		dot << "\n";
-		dot << "// " << c << "\n";
+		dot << "// " << c << " " << c->name << "\n";
 
 		std::string colour;
 		if (name == "disk")
@@ -589,7 +650,6 @@ dump_dot (const std::vector <CPtr> &v)
 	dot << "graph [ rankdir=\"TB\", color=\"white\",bgcolor=\"#000000\" ];\n";
 	dot << "node [ shape=\"record\", color=\"black\", fillcolor=\"lightcyan\", style=\"filled\" ];\n";
 	dot << "edge [ penwidth=3.0,color=\"#cccccc\" ];\n";
-	dot << "\n";
 
 	dot << dump_dot_inner (v);
 
@@ -603,15 +663,12 @@ dump_dot (const std::vector <CPtr> &v)
  * display_dot
  */
 void
-display_dot (const std::vector <CPtr> &v, int offset)
+display_dot (const CPtr c, int offset)
 {
-	if (v.size() == 0)
-		return;
-
-	std::string input = dump_dot(v);
+	std::string input = dump_dot(c->get_children());
 	//std::cout << input << std::endl;
 
-	int screen_x = -1366 - (offset*400);
+	int screen_x = -1-(offset*400);
 
 	std::string command = "dot -Tpng | display -title objects -gravity NorthEast -geometry " + std::to_string(screen_x) + "-40 -resize 70% - &";
 
@@ -638,6 +695,8 @@ display_pool (int offset)
 
 	for (auto p : pool) {
 		std::string name = p->name;
+		if (name.empty())
+			continue;
 
 		dot << "\n";
 		dot << "// " << p << "\n";
@@ -661,7 +720,7 @@ display_pool (int offset)
 	std::string input = dot.str();
 	//std::cout << input << std::endl;
 
-	int screen_x = -1366 - (offset*400);
+	int screen_x = -1-(offset*400);
 
 	std::string command = "dot -Tpng | display -title objects -gravity NorthEast -geometry " + std::to_string(screen_x) + "+0 -resize 70% - &";
 
@@ -674,7 +733,7 @@ display_pool (int offset)
  */
 int main (int, char *[])
 {
-	std::vector <CPtr> v;
+	CPtr c  = Container::create();
 
 	DPtr d  = Disk::create();
 	PPtr p1 = Partition::create();
@@ -697,18 +756,19 @@ int main (int, char *[])
 	f2->set_size   (240);
 	f2->set_label  ("hatstand");
 
-	v.push_back (d);
+	c->add_child (d);
 	d->add_child (p1);
 	d->add_child (p2);
 	p1->add_child (f1);
 	p2->add_child (f2);
 
-	display_dot (v, 0);
+	display_dot (c, 0);
 	display_pool(0);
 
+	f2->backup();
 	f2->set_label ("new label");
 
-	display_dot (v, 1);
+	display_dot (c, 1);
 	display_pool(1);
 
 	return 0;

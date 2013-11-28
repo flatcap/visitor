@@ -21,20 +21,75 @@
 #include <memory>
 #include <sstream>
 #include <typeinfo>
+#include <deque>
+#include <tuple>
+#include <new>
 
-#include <unistd.h>
-
+class Timeline;
 class Container;
 class Disk;
 class Partition;
 class Filesystem;
 
+typedef std::shared_ptr<Timeline>   TPtr;
 typedef std::shared_ptr<Container>  CPtr;
 typedef std::shared_ptr<Disk>       DPtr;
 typedef std::shared_ptr<Partition>  PPtr;
 typedef std::shared_ptr<Filesystem> FPtr;
 
+int cc = 0;
+int cd = 0;
+int cp = 0;
+int cf = 0;
+
 std::vector<CPtr> pool;
+
+typedef std::tuple<CPtr, CPtr, std::string> Action;	// Current, Old, Description
+
+/**
+ * class Timeline
+ */
+class Timeline
+{
+public:
+	Timeline (void)
+	{
+	}
+
+	virtual ~Timeline()
+	{
+	}
+
+	void push (const Action &action)
+	{
+		timeline.push_back (action);
+	}
+
+	Action pop (void)
+	{
+		Action a = timeline.back();
+		timeline.pop_back();
+		return a;
+	}
+
+	void dump (void)
+	{
+		std::cout << "Timeline:\n";
+		for (auto a : timeline) {
+			CPtr        current;
+			CPtr        old;
+			std::string desc;
+
+			std::tie (current, old, desc) = a;
+
+			std::cout << '\t' << current << ", " << old << ", " << desc << std::endl;
+		}
+		std::cout << std::endl;
+	}
+
+	std::deque<Action> timeline;
+protected:
+};
 
 /**
  * class Backup
@@ -51,10 +106,12 @@ public:
 	{
 	}
 
-	virtual void backup (void)
+	virtual CPtr backup (void)
 	{
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 		seqnum = (seqnum+100)/100*100;
+
+		return nullptr;
 	}
 
 	virtual void restore (void)
@@ -90,15 +147,30 @@ public:
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
+	Container (const Container &c) :
+		name (c.name),
+		size (c.size)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+		for (auto child : c.children) {
+			children.push_back (child->backup());
+		}
+	}
+
 	virtual ~Container()
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
-	virtual void backup (void)
+	virtual CPtr backup (void)
 	{
-		Backup::backup();
+		//Backup::backup();
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+		CPtr old (new Container (*this));
+		cc++;
+		return old;
 	}
 
 	virtual void restore (void)
@@ -113,13 +185,14 @@ public:
 
 		pool.push_back(c);
 
+		cc++;
 		return c;
 	}
 
 	void *
 	operator new (size_t size)
 	{
-		Container *c = (Container*) malloc (size);
+		Container *c = (Container*) ::operator new (size);
 
 #if 0
 		std::cout << "new object " << c << std::endl;
@@ -139,7 +212,7 @@ public:
 		std::cout << "delete object " << c << std::endl;
 #endif
 
-		free (ptr);
+		::operator delete (ptr);
 	}
 
 	int get_size (void)
@@ -164,7 +237,7 @@ public:
 
 	std::string name;
 
-	std::vector<CPtr> get_children (void)
+	const std::vector<CPtr>& get_children (void)
 	{
 		return children;
 	}
@@ -186,15 +259,26 @@ public:
 		name = "disk";
 	}
 
+	Disk (const Disk &d) :
+		Container (d),
+		device (d.device)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
 	virtual ~Disk()
 	{
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
-	virtual void backup (void)
+	virtual CPtr backup (void)
 	{
-		Container::backup();
+		//Container::backup();
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+		CPtr old (new Disk (*this));
+		cd++;
+		return old;
 	}
 
 	virtual void restore (void)
@@ -209,6 +293,7 @@ public:
 
 		pool.push_back(d);
 
+		cd++;
 		return d;
 	}
 
@@ -247,10 +332,21 @@ public:
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
-	virtual void backup (void)
+	Partition (const Partition &p) :
+		Container (p),
+		id (p.id)
 	{
-		Container::backup();
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual CPtr backup (void)
+	{
+		//Container::backup();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+		CPtr old (new Partition (*this));
+		cp++;
+		return old;
 	}
 
 	virtual void restore (void)
@@ -265,6 +361,7 @@ public:
 
 		pool.push_back(p);
 
+		cp++;
 		return p;
 	}
 
@@ -302,10 +399,21 @@ public:
 		//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
-	virtual void backup (void)
+	Filesystem (const Filesystem &f) :
+		Container (f),
+		label (f.label)
 	{
-		Container::backup();
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+
+	virtual CPtr backup (void)
+	{
+		//Container::backup();
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+		CPtr old (new Filesystem (*this));
+		cf++;
+		return old;
 	}
 
 	virtual void restore (void)
@@ -320,6 +428,7 @@ public:
 
 		pool.push_back(f);
 
+		cf++;
 		return f;
 	}
 
@@ -538,8 +647,8 @@ dot_container (const CPtr &c)
 {
 	std::stringstream output;
 
-	output << dot_row ("size",   c->get_size());
 	output << dot_row ("seqnum", c->get_seqnum());
+	output << dot_row ("size",   c->get_size());
 
 	return output.str();
 }
@@ -613,14 +722,19 @@ dump_dot_inner (const std::vector <CPtr> &v)
 
 		std::string colour;
 		if (name == "disk")
-			colour = "#ffc0c0";
+			colour = "#ffc0c0";	// red
 		else if (name == "partition")
-			colour = "#d0d080";
+			colour = "#d0d080";	// yellow
+		else if (name == "filesystem")
+			colour = "#80c080";	// green
 		else
-			colour = "#80c080";
+			colour = "#c0c0c0";	// grey
 
 		dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\">\n";
-		dot << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" << c->name << "</b></font> (" << c << ")</td></tr>\n";
+		dot << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" <<
+			//c->name
+			(char)toupper(name[0])
+			<< "</b></font> (" << c << ")</td></tr>\n";
 
 		     if (name == "disk")          { dot << dot_disk       (c); }
 		else if (name == "filesystem")    { dot << dot_filesystem (c); }
@@ -628,7 +742,7 @@ dump_dot_inner (const std::vector <CPtr> &v)
 
 		dot << "</table>>];\n";
 
-		for (auto c2 : c->get_children()) {
+		for (auto const &c2 : c->get_children()) {
 			dot << "obj_" << c << " -> obj_" << c2 << ";\n";
 		}
 
@@ -663,14 +777,14 @@ dump_dot (const std::vector <CPtr> &v)
  * display_dot
  */
 void
-display_dot (const CPtr c, int offset)
+display_dot (const CPtr c, int offset, const std::string &title)
 {
 	std::string input = dump_dot(c->get_children());
 	//std::cout << input << std::endl;
 
 	int screen_x = -1-(offset*400);
 
-	std::string command = "dot -Tpng | display -title objects -gravity NorthEast -geometry " + std::to_string(screen_x) + "-40 -resize 70% - &";
+	std::string command = "dot -Tpng | display -title \"" + title + "\" -gravity NorthEast -geometry " + std::to_string(screen_x) + "-40 -resize 70% - &";
 
 	execute_command (command, input);
 }
@@ -729,6 +843,100 @@ display_pool (int offset)
 
 
 /**
+ * display_tl_instance
+ */
+std::string display_tl_instance (const CPtr &c)
+{
+	// dump an instance
+	// for each child
+	//   dump child instance
+	// link this and children
+
+	std::stringstream dot;
+	std::string name;
+
+	name = c->name;
+	if (name.empty())
+		name = "c";
+
+	dot << "\n";
+	dot << "// " << c << "\n";
+
+	std::string colour;
+	if (name == "disk")
+		colour = "#ffc0c0";	// red
+	else if (name == "partition")
+		colour = "#d0d080";	// yellow
+	else if (name == "filesystem")
+		colour = "#80c080";	// green
+	else
+		colour = "#c0c0c0";	// grey
+
+	dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\"><tr><td>\n";
+	dot << "<font point-size=\"16\"><b>" << (char)toupper(name[0]) << "</b></font> (" << c.use_count() << ")</td></tr><tr><td>\n";
+	dot << "<font point-size=\"10\">" << c << "</font></td></tr></table>\n";
+	dot << ">];\n";
+
+	for (auto const &child : c->get_children()) {
+		dot << display_tl_instance (child);
+		dot << "obj_" << c << " -> obj_" << child << ";\n";
+	}
+
+	return dot.str();
+}
+
+/**
+ * display_timeline
+ */
+void
+display_timeline (const Timeline &tl)
+{
+	if (tl.timeline.size() == 0)
+		return;
+
+	std::stringstream dot;
+	std::string desc;
+	int count = 1;
+
+	dot << "digraph disks {\n";
+	dot << "graph [ rankdir=\"TB\", color=\"white\",bgcolor=\"#000000\" ];\n";
+	dot << "node [ shape=\"record\", color=\"black\", fillcolor=\"lightcyan\", style=\"filled\" ];\n";
+	dot << "edge [ penwidth=3.0,color=\"#cccccc\" ];\n";
+	dot << "\n";
+
+	for (auto t : tl.timeline) {
+		CPtr c;
+
+		std::tie (std::ignore, c, desc) = t;
+
+		if (!c) {
+			std::cout << "empty ptr\n";
+			continue;
+		}
+
+		dot << "subgraph cluster_" << count++ << " { color=red;\n";
+		dot << "fontcolor = \"white\";\n";
+		dot << "label = \"" + desc + "\";\n";
+		dot << display_tl_instance (c);
+		dot << "}\n";
+	}
+
+	dot << "\n}";
+	dot << "\n";
+
+	std::string input = dot.str();
+	//std::cout << input << std::endl;
+
+	int offset = 0;
+	int screen_x = -1-(offset*400);
+
+	std::string command = "dot -Tpng | display -title \"timeline:" + std::to_string(count-1) + "\" -gravity NorthEast -geometry " + std::to_string(screen_x) + "+0 -resize 80% - &";
+
+	execute_command (command, input);
+}
+
+
+/**
  * main
  */
 int main (int, char *[])
@@ -756,20 +964,40 @@ int main (int, char *[])
 	f2->set_size   (240);
 	f2->set_label  ("hatstand");
 
+	Timeline tl;
+	CPtr old;
+
+	old = c->backup();
+	tl.push (Action(c, old, "add disk"));
 	c->add_child (d);
+
+	old = d->backup();
+	tl.push (Action(c, old, "add partition"));
 	d->add_child (p1);
-	d->add_child (p2);
+
+	old = p1->backup();
+	tl.push (Action(c, old, "add filesystem"));
 	p1->add_child (f1);
+
+	old = d->backup();
+	tl.push (Action(c, old, "add sibling"));
+	d->add_child (p2);
 	p2->add_child (f2);
 
-	display_dot (c, 0);
-	display_pool(0);
-
-	f2->backup();
+	old = f2->backup();
+	tl.push (Action(c, old, "set label"));
 	f2->set_label ("new label");
 
-	display_dot (c, 1);
-	display_pool(1);
+	std::cout << "count:\n"
+		<< "\t" << cc << "\tcontainers\n"
+		<< "\t" << cd << "\tdisks\n"
+		<< "\t" << cp << "\tpartitions\n"
+		<< "\t" << cf << "\tfilesystems\n";
+
+	display_dot (c, 1, "objects");
+
+	tl.dump();
+	display_timeline (tl);
 
 	return 0;
 }

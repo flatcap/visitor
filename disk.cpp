@@ -17,33 +17,49 @@
 
 #include <iostream>
 
-#include "backup.h"
-
-static int base_seqnum = 1000;
+#include "disk.h"
+#include "main.h"
 
 /**
- * Backup (default)
+ * Disk (default)
  */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
+Disk::Disk (void)
 {
-	base_seqnum += 1000;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	name = "disk";
 }
 
 /**
- * Backup (copy)
+ * Disk (copy)
  */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
+Disk::Disk (const Disk &d) :
+	Container (d),
+	device (d.device)
 {
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 /**
- * ~Backup
+ * ~Disk
  */
-Backup::~Backup()
+Disk::~Disk()
 {
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+
+/**
+ * create (static)
+ */
+DPtr
+Disk::create (void)
+{
+	DPtr d (new Disk);
+
+	pool.push_back(d);
+
+	cd++;
+	return d;
 }
 
 
@@ -51,41 +67,46 @@ Backup::~Backup()
  * backup
  */
 CPtr
-Backup::backup (void)
+Disk::backup (void)
 {
+	//Container::backup();
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
 
-	return nullptr;
+	CPtr old (new Disk (*this));
+	cd++;
+	return old;
 }
 
 /**
  * restore
  */
 void
-Backup::restore (void)
+Disk::restore (void)
 {
+	Container::restore();
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
 }
 
 
 /**
- * get_seqnum
+ * get_device
  */
-int
-Backup::get_seqnum (void)
+std::string
+Disk::get_device (void)
 {
-	return seqnum;
+	return device;
 }
-
 
 /**
- * changed
+ * set_device
  */
-void
-Backup::changed (void)
+std::string
+Disk::set_device (std::string value)
 {
-	seqnum++;
+	std::string old = device;
+	device = value;
+	changed();
+	return old;
 }
+
 

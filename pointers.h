@@ -15,77 +15,22 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
+#ifndef _POINTERS_H_
+#define _POINTERS_H_
 
-#include "backup.h"
+#include <memory>
 
-static int base_seqnum = 1000;
+class Timeline;
+class Container;
+class Disk;
+class Partition;
+class Filesystem;
 
-/**
- * Backup (default)
- */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
-{
-	base_seqnum += 1000;
-}
+typedef std::shared_ptr<Timeline>   TPtr;
+typedef std::shared_ptr<Container>  CPtr;
+typedef std::shared_ptr<Disk>       DPtr;
+typedef std::shared_ptr<Partition>  PPtr;
+typedef std::shared_ptr<Filesystem> FPtr;
 
-/**
- * Backup (copy)
- */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-/**
- * ~Backup
- */
-Backup::~Backup()
-{
-}
-
-
-/**
- * backup
- */
-CPtr
-Backup::backup (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-
-	return nullptr;
-}
-
-/**
- * restore
- */
-void
-Backup::restore (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-}
-
-
-/**
- * get_seqnum
- */
-int
-Backup::get_seqnum (void)
-{
-	return seqnum;
-}
-
-
-/**
- * changed
- */
-void
-Backup::changed (void)
-{
-	seqnum++;
-}
+#endif // _POINTERS_H_
 

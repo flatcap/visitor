@@ -2,8 +2,7 @@ CC	= g++
 RM	= rm -fr
 MKDIR	= mkdir -p
 
-# Library
-SRC	+= backup.cpp
+SRC	+= backup.cpp container.cpp disk.cpp dot.cpp filesystem.cpp main.cpp partition.cpp timeline.cpp utils.cpp
 
 #HDR	= $(SRC:%.cpp=%.h)
 

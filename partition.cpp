@@ -17,33 +17,50 @@
 
 #include <iostream>
 
-#include "backup.h"
-
-static int base_seqnum = 1000;
+#include "partition.h"
+#include "main.h"
 
 /**
- * Backup (default)
+ * Partition (default)
  */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
+Partition::Partition (void) :
+	id(0)
 {
-	base_seqnum += 1000;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	name = "partition";
 }
 
 /**
- * Backup (copy)
+ * Partition (copy)
  */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
+Partition::Partition (const Partition &p) :
+	Container (p),
+	id (p.id)
 {
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 /**
- * ~Backup
+ * ~Partition
  */
-Backup::~Backup()
+Partition::~Partition()
 {
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+
+/**
+ * create (static)
+ */
+PPtr
+Partition::create (void)
+{
+	PPtr p (new Partition);
+
+	pool.push_back(p);
+
+	cp++;
+	return p;
 }
 
 
@@ -51,41 +68,46 @@ Backup::~Backup()
  * backup
  */
 CPtr
-Backup::backup (void)
+Partition::backup (void)
 {
+	//Container::backup();
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
 
-	return nullptr;
+	CPtr old (new Partition (*this));
+	cp++;
+	return old;
 }
 
 /**
  * restore
  */
 void
-Backup::restore (void)
+Partition::restore (void)
 {
+	Container::restore();
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
 }
 
 
 /**
- * get_seqnum
+ * get_id
  */
 int
-Backup::get_seqnum (void)
+Partition::get_id (void)
 {
-	return seqnum;
+	return id;
 }
-
 
 /**
- * changed
+ * set_id
  */
-void
-Backup::changed (void)
+int
+Partition::set_id (int value)
 {
-	seqnum++;
+	int old = id;
+	id = value;
+	changed();
+	return old;
 }
+
 

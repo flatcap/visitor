@@ -15,77 +15,33 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
+#ifndef _BACKUP_H_
+#define _BACKUP_H_
 
-#include "backup.h"
-
-static int base_seqnum = 1000;
-
-/**
- * Backup (default)
- */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
-{
-	base_seqnum += 1000;
-}
+#include "pointers.h"
 
 /**
- * Backup (copy)
+ * class Backup
  */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
+class Backup
 {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
+public:
+	Backup();
+	Backup (const Backup &b);
+	virtual ~Backup();
 
-/**
- * ~Backup
- */
-Backup::~Backup()
-{
-}
+	virtual CPtr backup (void);
+	virtual void restore (void);
 
+	int get_seqnum (void);
 
-/**
- * backup
- */
-CPtr
-Backup::backup (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
+protected:
+	void changed (void);
 
-	return nullptr;
-}
-
-/**
- * restore
- */
-void
-Backup::restore (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-}
+private:
+	int seqnum;
+};
 
 
-/**
- * get_seqnum
- */
-int
-Backup::get_seqnum (void)
-{
-	return seqnum;
-}
-
-
-/**
- * changed
- */
-void
-Backup::changed (void)
-{
-	seqnum++;
-}
+#endif // _BACKUP_H_
 

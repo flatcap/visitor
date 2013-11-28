@@ -15,77 +15,17 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
+#ifndef _MAIN_H_
+#define _MAIN_H_
 
-#include "backup.h"
+#include "pointers.h"
 
-static int base_seqnum = 1000;
+extern int cc;
+extern int cd;
+extern int cp;
+extern int cf;
 
-/**
- * Backup (default)
- */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
-{
-	base_seqnum += 1000;
-}
+extern std::vector<CPtr> pool;
 
-/**
- * Backup (copy)
- */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-/**
- * ~Backup
- */
-Backup::~Backup()
-{
-}
-
-
-/**
- * backup
- */
-CPtr
-Backup::backup (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-
-	return nullptr;
-}
-
-/**
- * restore
- */
-void
-Backup::restore (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-}
-
-
-/**
- * get_seqnum
- */
-int
-Backup::get_seqnum (void)
-{
-	return seqnum;
-}
-
-
-/**
- * changed
- */
-void
-Backup::changed (void)
-{
-	seqnum++;
-}
+#endif // _MAIN_H_
 

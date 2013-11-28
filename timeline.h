@@ -15,77 +15,38 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
+#ifndef _TIMELINE_H_
+#define _TIMELINE_H_
 
-#include "backup.h"
+#include <tuple>
+#include <deque>
+#include <string>
 
-static int base_seqnum = 1000;
+#include "pointers.h"
 
-/**
- * Backup (default)
- */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
-{
-	base_seqnum += 1000;
-}
+typedef std::tuple<CPtr, CPtr, std::string> Action;	// Current, Old, Description
 
 /**
- * Backup (copy)
+ * class Timeline
  */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
+class Timeline
 {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
+public:
+	Timeline (void);
+	virtual ~Timeline();
 
-/**
- * ~Backup
- */
-Backup::~Backup()
-{
-}
+	void push (const Action &action);
+	Action pop (void);
 
+	CPtr backup (const CPtr &root, const std::string &desc);
 
-/**
- * backup
- */
-CPtr
-Backup::backup (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
+	void dump (void);
+	void display (void);
 
-	return nullptr;
-}
-
-/**
- * restore
- */
-void
-Backup::restore (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-}
+protected:
+	std::deque<Action> timeline;
+};
 
 
-/**
- * get_seqnum
- */
-int
-Backup::get_seqnum (void)
-{
-	return seqnum;
-}
-
-
-/**
- * changed
- */
-void
-Backup::changed (void)
-{
-	seqnum++;
-}
+#endif // _TIMELINE_H_
 

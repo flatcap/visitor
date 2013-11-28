@@ -17,33 +17,49 @@
 
 #include <iostream>
 
-#include "backup.h"
-
-static int base_seqnum = 1000;
+#include "filesystem.h"
+#include "main.h"
 
 /**
- * Backup (default)
+ * Filesystem (default)
  */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
+Filesystem::Filesystem (void)
 {
-	base_seqnum += 1000;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	name = "filesystem";
 }
 
 /**
- * Backup (copy)
+ * Filesystem (copy)
  */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
+Filesystem::Filesystem (const Filesystem &f) :
+	Container (f),
+	label (f.label)
 {
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 /**
- * ~Backup
+ * ~Filesystem
  */
-Backup::~Backup()
+Filesystem::~Filesystem()
 {
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+
+/**
+ * create (static)
+ */
+FPtr
+Filesystem::create (void)
+{
+	FPtr f (new Filesystem);
+
+	pool.push_back(f);
+
+	cf++;
+	return f;
 }
 
 
@@ -51,41 +67,46 @@ Backup::~Backup()
  * backup
  */
 CPtr
-Backup::backup (void)
+Filesystem::backup (void)
 {
+	//Container::backup();
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
 
-	return nullptr;
+	CPtr old (new Filesystem (*this));
+	cf++;
+	return old;
 }
 
 /**
  * restore
  */
 void
-Backup::restore (void)
+Filesystem::restore (void)
 {
+	Container::restore();
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
 }
 
 
 /**
- * get_seqnum
+ * get_label
  */
-int
-Backup::get_seqnum (void)
+std::string
+Filesystem::get_label (void)
 {
-	return seqnum;
+	return label;
 }
-
 
 /**
- * changed
+ * set_label
  */
-void
-Backup::changed (void)
+std::string
+Filesystem::set_label (const std::string &value)
 {
-	seqnum++;
+	std::string old = label;
+	label = value;
+	changed();
+	return old;
 }
+
 

@@ -15,77 +15,32 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
-
-#include "backup.h"
-
-static int base_seqnum = 1000;
+#include <cstdio>
+#include <string>
 
 /**
- * Backup (default)
+ * execute_command
  */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
+unsigned int
+execute_command (const std::string &command, std::string &input)
 {
-	base_seqnum += 1000;
+	FILE *file = nullptr;
+	int count = 0;
+
+	file = popen (command.c_str(), "we");
+	if (file == nullptr) {
+		printf ("popen failed");
+		return -1;
+	}
+
+	count = fprintf (file, "%s\n", input.c_str());
+
+	if (pclose (file) == -1) {
+		printf ("pclose failed");
+		return -1;
+	}
+
+	return count;
 }
 
-/**
- * Backup (copy)
- */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-/**
- * ~Backup
- */
-Backup::~Backup()
-{
-}
-
-
-/**
- * backup
- */
-CPtr
-Backup::backup (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-
-	return nullptr;
-}
-
-/**
- * restore
- */
-void
-Backup::restore (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-}
-
-
-/**
- * get_seqnum
- */
-int
-Backup::get_seqnum (void)
-{
-	return seqnum;
-}
-
-
-/**
- * changed
- */
-void
-Backup::changed (void)
-{
-	seqnum++;
-}
 

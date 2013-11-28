@@ -15,77 +15,44 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
+#ifndef _CONTAINER_H_
+#define _CONTAINER_H_
 
+#include <vector>
+
+#include "pointers.h"
 #include "backup.h"
 
-static int base_seqnum = 1000;
-
 /**
- * Backup (default)
+ * class Container
  */
-Backup::Backup() :
-	seqnum(1+base_seqnum)
+class Container : public Backup
 {
-	base_seqnum += 1000;
-}
+public:
+	Container (void);
+	Container (const Container &c);
+	virtual ~Container();
 
-/**
- * Backup (copy)
- */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
+	void * operator new (size_t size);
+	void operator delete (void *ptr);
 
-/**
- * ~Backup
- */
-Backup::~Backup()
-{
-}
+	static CPtr create (void);
 
+	virtual CPtr backup (void);
+	virtual void restore (void);
 
-/**
- * backup
- */
-CPtr
-Backup::backup (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
+	int get_size (void);
+	int set_size (int value);
+	int add_child (CPtr child);
+	void remove_child (size_t index);
+	const std::vector<CPtr>& get_children (void);
 
-	return nullptr;
-}
-
-/**
- * restore
- */
-void
-Backup::restore (void)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-}
+	std::string name;
+private:
+	int size;
+	std::vector<CPtr> children;
+};
 
 
-/**
- * get_seqnum
- */
-int
-Backup::get_seqnum (void)
-{
-	return seqnum;
-}
-
-
-/**
- * changed
- */
-void
-Backup::changed (void)
-{
-	seqnum++;
-}
+#endif // _CONTAINER_H_
 

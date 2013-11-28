@@ -36,7 +36,7 @@ Partition::Partition (const Partition &p) :
 	Container (p),
 	id (p.id)
 {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 /**
@@ -45,6 +45,20 @@ Partition::Partition (const Partition &p) :
 Partition::~Partition()
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+
+/**
+ * operator=
+ */
+Partition &
+Partition::operator= (const Partition &p)
+{
+	Container::operator= (p);
+
+	id = p.id;
+
+	return *this;
 }
 
 
@@ -67,7 +81,7 @@ CPtr
 Partition::backup (void)
 {
 	//Container::backup();
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	CPtr old (new Partition (*this));
 	return old;
@@ -80,7 +94,7 @@ void
 Partition::restore (void)
 {
 	Container::restore();
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 

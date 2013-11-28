@@ -33,6 +33,8 @@ public:
 	Container (const Container &c);
 	virtual ~Container();
 
+	Container & operator= (const Container &c);
+
 	void * operator new (size_t size);
 	void operator delete (void *ptr);
 

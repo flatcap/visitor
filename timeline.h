@@ -39,6 +39,7 @@ public:
 	Action pop (void);
 
 	CPtr backup (const CPtr &root, const std::string &desc);
+	void restore (void);
 
 	void dump (void);
 	void display (void);

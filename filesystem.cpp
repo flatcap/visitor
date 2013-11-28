@@ -35,7 +35,7 @@ Filesystem::Filesystem (const Filesystem &f) :
 	Container (f),
 	label (f.label)
 {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 /**
@@ -44,6 +44,20 @@ Filesystem::Filesystem (const Filesystem &f) :
 Filesystem::~Filesystem()
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+
+/**
+ * operator=
+ */
+Filesystem &
+Filesystem::operator= (const Filesystem &f)
+{
+	Container::operator= (f);
+
+	label = f.label;
+
+	return *this;
 }
 
 
@@ -66,7 +80,7 @@ CPtr
 Filesystem::backup (void)
 {
 	//Container::backup();
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	CPtr old (new Filesystem (*this));
 	return old;
@@ -79,7 +93,7 @@ void
 Filesystem::restore (void)
 {
 	Container::restore();
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 

@@ -30,6 +30,8 @@ public:
 	Filesystem (const Filesystem &f);
 	virtual ~Filesystem();
 
+	Filesystem & operator= (const Filesystem &f);
+
 	static FPtr create (void);
 
 	virtual CPtr backup (void);

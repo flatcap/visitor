@@ -19,6 +19,7 @@
 #include <sstream>
 
 #include "timeline.h"
+#include "container.h"
 #include "dot.h"
 #include "utils.h"
 
@@ -64,7 +65,26 @@ Timeline::pop (void)
 CPtr
 Timeline::backup (const CPtr &root, const std::string &desc)
 {
-	return nullptr;
+	CPtr copy = root->backup();
+
+	push (Action(root, copy, desc));
+
+	return copy;
+}
+
+/**
+ * restore
+ */
+void
+Timeline::restore (void)
+{
+	CPtr        current;
+	CPtr        old;
+	std::string desc;
+
+	std::tie (current, old, desc) = pop();
+
+	*current = *old;	// copy the objects, not the smart pointers
 }
 
 

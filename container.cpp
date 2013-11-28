@@ -36,7 +36,7 @@ Container::Container (const Container &c) :
 	name (c.name),
 	size (c.size)
 {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	for (auto child : c.children) {
 		children.push_back (child->backup());
@@ -49,6 +49,22 @@ Container::Container (const Container &c) :
 Container::~Container()
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+
+/**
+ * operator=
+ */
+Container &
+Container::operator= (const Container &c)
+{
+	Backup::operator= (c);
+
+	name     = c.name;
+	size     = c.size;
+	children = c.children;
+
+	return *this;
 }
 
 
@@ -104,7 +120,7 @@ CPtr
 Container::backup (void)
 {
 	//Backup::backup();
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	CPtr old (new Container (*this));
 	return old;
@@ -117,7 +133,7 @@ void
 Container::restore (void)
 {
 	Backup::restore();
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 

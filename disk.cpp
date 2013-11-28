@@ -35,7 +35,7 @@ Disk::Disk (const Disk &d) :
 	Container (d),
 	device (d.device)
 {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 /**
@@ -44,6 +44,20 @@ Disk::Disk (const Disk &d) :
 Disk::~Disk()
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+
+/**
+ * operator=
+ */
+Disk &
+Disk::operator= (const Disk &d)
+{
+	Container::operator= (d);
+
+	device = d.device;
+
+	return *this;
 }
 
 
@@ -66,7 +80,7 @@ CPtr
 Disk::backup (void)
 {
 	//Container::backup();
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	CPtr old (new Disk (*this));
 	return old;
@@ -79,7 +93,7 @@ void
 Disk::restore (void)
 {
 	Container::restore();
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 

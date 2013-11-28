@@ -30,6 +30,8 @@ public:
 	Partition (const Partition &p);
 	virtual ~Partition();
 
+	Partition & operator= (const Partition &p);
+
 	static PPtr create (void);
 
 	virtual CPtr backup (void);

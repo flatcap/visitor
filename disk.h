@@ -30,6 +30,8 @@ public:
 	Disk (const Disk &d);
 	virtual ~Disk();
 
+	Disk & operator= (const Disk &d);
+
 	static DPtr create (void);
 
 	virtual CPtr backup (void);

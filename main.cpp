@@ -63,7 +63,6 @@ int main (int, char *[])
 	f2->set_label  ("hatstand");
 
 	Timeline tl;
-	CPtr old;
 
 	c->add_child (d);
 	d->add_child (p1);
@@ -72,18 +71,14 @@ int main (int, char *[])
 	p2->add_child (f2);
 
 	tl.backup (d, "initial");
-
-	old = d->backup();
-	tl.push (Action(c, old, "initial"));
-
-	display_dot (c, 1, "objects");
-	d->remove_child(1);
-	display_dot (c, 0, "objects");
-
-	//tl.restore();
-
 	//tl.dump();
 	tl.display();
+
+	display_dot (c, 2, "initial");
+	d->remove_child(1);
+	display_dot (c, 1, "deleted");
+	tl.restore();
+	display_dot (c, 0, "restored");
 
 	return 0;
 }

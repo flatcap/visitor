@@ -30,6 +30,8 @@ public:
 	Backup (const Backup &b);
 	virtual ~Backup();
 
+	Backup & operator= (const Backup &b);
+
 	virtual CPtr backup (void);
 	virtual void restore (void);
 

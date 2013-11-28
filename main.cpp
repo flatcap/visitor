@@ -34,11 +34,6 @@
 #include "filesystem.h"
 #include "dot.h"
 
-int cc = 0;
-int cd = 0;
-int cp = 0;
-int cf = 0;
-
 /**
  * main
  */
@@ -80,14 +75,6 @@ int main (int, char *[])
 
 	old = d->backup();
 	tl.push (Action(c, old, "initial"));
-
-#if 0
-	std::cout << "count:\n"
-		<< "\t" << cc << "\tcontainers\n"
-		<< "\t" << cd << "\tdisks\n"
-		<< "\t" << cp << "\tpartitions\n"
-		<< "\t" << cf << "\tfilesystems\n";
-#endif
 
 	display_dot (c, 1, "objects");
 	d->remove_child(1);

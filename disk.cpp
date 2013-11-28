@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "disk.h"
-#include "main.h"
 
 /**
  * Disk (default)
@@ -56,7 +55,6 @@ Disk::create (void)
 {
 	DPtr d (new Disk);
 
-	cd++;
 	return d;
 }
 
@@ -71,7 +69,6 @@ Disk::backup (void)
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	CPtr old (new Disk (*this));
-	cd++;
 	return old;
 }
 

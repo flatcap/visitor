@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "filesystem.h"
-#include "main.h"
 
 /**
  * Filesystem (default)
@@ -56,7 +55,6 @@ Filesystem::create (void)
 {
 	FPtr f (new Filesystem);
 
-	cf++;
 	return f;
 }
 
@@ -71,7 +69,6 @@ Filesystem::backup (void)
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	CPtr old (new Filesystem (*this));
-	cf++;
 	return old;
 }
 

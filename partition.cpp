@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "partition.h"
-#include "main.h"
 
 /**
  * Partition (default)
@@ -57,7 +56,6 @@ Partition::create (void)
 {
 	PPtr p (new Partition);
 
-	cp++;
 	return p;
 }
 
@@ -72,7 +70,6 @@ Partition::backup (void)
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	CPtr old (new Partition (*this));
-	cp++;
 	return old;
 }
 

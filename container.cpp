@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "container.h"
-#include "main.h"
 
 /**
  * Container (default)
@@ -94,7 +93,6 @@ Container::create (void)
 {
 	CPtr c (new Container);
 
-	cc++;
 	return c;
 }
 
@@ -109,7 +107,6 @@ Container::backup (void)
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 
 	CPtr old (new Container (*this));
-	cc++;
 	return old;
 }
 

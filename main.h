@@ -18,12 +18,5 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-#include "pointers.h"
-
-extern int cc;
-extern int cd;
-extern int cp;
-extern int cf;
-
 #endif // _MAIN_H_
 

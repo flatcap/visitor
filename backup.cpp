@@ -42,6 +42,8 @@ int cd = 0;
 int cp = 0;
 int cf = 0;
 
+static int base_seqnum = 1000;
+
 std::vector<CPtr> pool;
 
 typedef std::tuple<CPtr, CPtr, std::string> Action;	// Current, Old, Description
@@ -91,6 +93,7 @@ public:
 protected:
 };
 
+
 /**
  * class Backup
  */
@@ -98,12 +101,19 @@ class Backup
 {
 public:
 	Backup() :
-		seqnum(1)
+		seqnum(1+base_seqnum)
 	{
+		base_seqnum += 1000;
 	}
 
 	virtual ~Backup()
 	{
+	}
+
+	Backup (const Backup &b) :
+		seqnum (b.seqnum)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
 
 	virtual CPtr backup (void)
@@ -148,6 +158,7 @@ public:
 	}
 
 	Container (const Container &c) :
+		Backup (c),
 		name (c.name),
 		size (c.size)
 	{
@@ -233,6 +244,15 @@ public:
 		children.push_back (child);
 		changed();
 		return children.size();
+	}
+
+	void remove_child (size_t index)
+	{
+		if (index >= children.size())
+			return;
+
+		children.erase (children.begin()+index);
+		changed();
 	}
 
 	std::string name;
@@ -873,7 +893,7 @@ std::string display_tl_instance (const CPtr &c)
 		colour = "#c0c0c0";	// grey
 
 	dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\"><tr><td>\n";
-	dot << "<font point-size=\"16\"><b>" << (char)toupper(name[0]) << "</b></font> (" << c.use_count() << ")</td></tr><tr><td>\n";
+	dot << "<font point-size=\"16\"><b>" << (char)toupper(name[0]) << "</b></font> (" << c->get_seqnum() << ")</td></tr><tr><td>\n";
 	dot << "<font point-size=\"10\">" << c << "</font></td></tr></table>\n";
 	dot << ">];\n";
 
@@ -967,36 +987,30 @@ int main (int, char *[])
 	Timeline tl;
 	CPtr old;
 
-	old = c->backup();
-	tl.push (Action(c, old, "add disk"));
 	c->add_child (d);
-
-	old = d->backup();
-	tl.push (Action(c, old, "add partition"));
 	d->add_child (p1);
-
-	old = p1->backup();
-	tl.push (Action(c, old, "add filesystem"));
 	p1->add_child (f1);
-
-	old = d->backup();
-	tl.push (Action(c, old, "add sibling"));
 	d->add_child (p2);
 	p2->add_child (f2);
 
-	old = f2->backup();
-	tl.push (Action(c, old, "set label"));
-	f2->set_label ("new label");
+	old = d->backup();
+	tl.push (Action(c, old, "initial"));
 
+#if 0
 	std::cout << "count:\n"
 		<< "\t" << cc << "\tcontainers\n"
 		<< "\t" << cd << "\tdisks\n"
 		<< "\t" << cp << "\tpartitions\n"
 		<< "\t" << cf << "\tfilesystems\n";
+#endif
 
 	display_dot (c, 1, "objects");
+	d->remove_child(1);
+	display_dot (c, 0, "objects");
 
-	tl.dump();
+	//tl->restore();
+
+	//tl.dump();
 	display_timeline (tl);
 
 	return 0;

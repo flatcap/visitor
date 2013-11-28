@@ -99,6 +99,10 @@ Backup::get_seqnum (void)
 void
 Backup::changed (void)
 {
+	if (seqnum < 1)
+		return;
+
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	seqnum++;
 }
 

@@ -134,6 +134,11 @@ Container::restore (void)
 {
 	Backup::restore();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+	changed();
+	for (auto c : children) {
+		c->restore();
+	}
 }
 
 

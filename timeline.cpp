@@ -85,6 +85,8 @@ Timeline::restore (void)
 	std::tie (current, old, desc) = pop();
 
 	*current = *old;	// copy the objects, not the smart pointers
+
+	current->restore();
 }
 
 

@@ -375,55 +375,5 @@ dump_dot_small (const CPtr &c)
 
 	return dot.str();
 }
-/**
- * display_pool
- */
-void
-display_pool (int offset)
-{
-	if (pool.size() == 0)
-		return;
-
-	std::stringstream dot;
-
-	dot << "digraph disks {\n";
-	dot << "graph [ rankdir=\"LR\", color=\"white\",bgcolor=\"#000000\" ];\n";
-	dot << "node [ shape=\"record\", color=\"black\", fillcolor=\"lightcyan\", style=\"filled\" ];\n";
-	dot << "edge [ penwidth=3.0,color=\"#cccccc\" ];\n";
-	dot << "\n";
-
-	for (auto p : pool) {
-		std::string name = p->name;
-		if (name.empty())
-			continue;
-
-		dot << "\n";
-		dot << "// " << p << "\n";
-
-		std::string colour;
-		if (name == "disk")
-			colour = "#ffc0c0";
-		else if (name == "partition")
-			colour = "#d0d080";
-		else
-			colour = "#80c080";
-
-		dot << "obj_" << p << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\">\n";
-		dot << "<tr><td align=\"left\" colspan=\"3\"><font color=\"#000000\" point-size=\"16\"><b>" << p << "</b></font> (" << p->get_seqnum() << ")</td></tr>\n";
-		dot << "</table>>];\n";
-	}
-
-	dot << "\n}";
-	dot << "\n";
-
-	std::string input = dot.str();
-	//std::cout << input << std::endl;
-
-	int screen_x = -1-(offset*400);
-
-	std::string command = "dot -Tpng | display -title objects -gravity NorthEast -geometry " + std::to_string(screen_x) + "+0 -resize 70% - &";
-
-	execute_command (command, input);
-}
 
 

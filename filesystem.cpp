@@ -56,8 +56,6 @@ Filesystem::create (void)
 {
 	FPtr f (new Filesystem);
 
-	pool.push_back(f);
-
 	cf++;
 	return f;
 }

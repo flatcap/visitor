@@ -25,7 +25,5 @@ extern int cd;
 extern int cp;
 extern int cf;
 
-extern std::vector<CPtr> pool;
-
 #endif // _MAIN_H_
 

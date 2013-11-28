@@ -57,8 +57,6 @@ Partition::create (void)
 {
 	PPtr p (new Partition);
 
-	pool.push_back(p);
-
 	cp++;
 	return p;
 }

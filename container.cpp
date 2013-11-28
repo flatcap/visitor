@@ -94,8 +94,6 @@ Container::create (void)
 {
 	CPtr c (new Container);
 
-	pool.push_back(c);
-
 	cc++;
 	return c;
 }

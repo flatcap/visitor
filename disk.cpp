@@ -56,8 +56,6 @@ Disk::create (void)
 {
 	DPtr d (new Disk);
 
-	pool.push_back(d);
-
 	cd++;
 	return d;
 }

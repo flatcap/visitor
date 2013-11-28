@@ -39,8 +39,6 @@ int cd = 0;
 int cp = 0;
 int cf = 0;
 
-std::vector<CPtr> pool;
-
 /**
  * main
  */

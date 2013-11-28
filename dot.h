@@ -42,7 +42,6 @@ std::string dump_dot (const std::vector <CPtr> &v);
 
 void display_dot (const CPtr c, int offset, const std::string &title);
 std::string dump_dot_small (const CPtr &c);
-void display_pool (int offset);
 
 #endif // _DOT_H_
 

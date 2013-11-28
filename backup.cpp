@@ -42,6 +42,9 @@ int cd = 0;
 int cp = 0;
 int cf = 0;
 
+unsigned int execute_command (const std::string &command, std::string &input);
+std::string dump_dot_small (const CPtr &c);
+
 static int base_seqnum = 1000;
 
 std::vector<CPtr> pool;
@@ -89,8 +92,59 @@ public:
 		std::cout << std::endl;
 	}
 
-	std::deque<Action> timeline;
+	CPtr backup (const CPtr &root, const std::string &desc)
+	{
+		return nullptr;
+	}
+
+	void display (void)
+	{
+		if (timeline.size() == 0)
+			return;
+
+		std::stringstream dot;
+		std::string desc;
+		int count = 1;
+
+		dot << "digraph disks {\n";
+		dot << "graph [ rankdir=\"TB\", color=\"white\",bgcolor=\"#000000\" ];\n";
+		dot << "node [ shape=\"record\", color=\"black\", fillcolor=\"lightcyan\", style=\"filled\" ];\n";
+		dot << "edge [ penwidth=3.0,color=\"#cccccc\" ];\n";
+		dot << "\n";
+
+		for (auto t : timeline) {
+			CPtr c;
+
+			std::tie (std::ignore, c, desc) = t;
+
+			if (!c) {
+				std::cout << "empty ptr\n";
+				continue;
+			}
+
+			dot << "subgraph cluster_" << count++ << " { color=red;\n";
+			dot << "fontcolor = \"white\";\n";
+			dot << "label = \"" + desc + "\";\n";
+			dot << dump_dot_small (c);
+			dot << "}\n";
+		}
+
+		dot << "\n}";
+		dot << "\n";
+
+		std::string input = dot.str();
+		//std::cout << input << std::endl;
+
+		int offset = 0;
+		int screen_x = -1-(offset*400);
+
+		std::string command = "dot -Tpng | display -title \"timeline:" + std::to_string(count-1) + "\" -gravity NorthEast -geometry " + std::to_string(screen_x) + "+0 -resize 80% - &";
+
+		execute_command (command, input);
+	}
+
 protected:
+	std::deque<Action> timeline;
 };
 
 
@@ -741,14 +795,10 @@ dump_dot_inner (const std::vector <CPtr> &v)
 		dot << "// " << c << " " << c->name << "\n";
 
 		std::string colour;
-		if (name == "disk")
-			colour = "#ffc0c0";	// red
-		else if (name == "partition")
-			colour = "#d0d080";	// yellow
-		else if (name == "filesystem")
-			colour = "#80c080";	// green
-		else
-			colour = "#c0c0c0";	// grey
+		     if (name == "disk")       colour = "#ffc0c0";	// red
+		else if (name == "partition")  colour = "#d0d080";	// yellow
+		else if (name == "filesystem") colour = "#80c080";	// green
+		else                           colour = "#c0c0c0";	// grey
 
 		dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\">\n";
 		dot << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" <<
@@ -811,6 +861,44 @@ display_dot (const CPtr c, int offset, const std::string &title)
 
 
 /**
+ * dump_dot_small
+ */
+std::string dump_dot_small (const CPtr &c)
+{
+	// dump an instance
+	// for each child
+	//   dump child instance
+	// link this and children
+
+	std::stringstream dot;
+	std::string name;
+
+	name = c->name;
+	if (name.empty())
+		name = "c";
+
+	dot << "\n";
+	dot << "// " << c << "\n";
+
+	std::string colour;
+	     if (name == "disk")       colour = "#ffc0c0";	// red
+	else if (name == "partition")  colour = "#d0d080";	// yellow
+	else if (name == "filesystem") colour = "#80c080";	// green
+	else                           colour = "#c0c0c0";	// grey
+
+	dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\"><tr><td>\n";
+	dot << "<font point-size=\"16\"><b>" << (char)toupper(name[0]) << "</b></font> (" << c->get_seqnum() << ")</td></tr><tr><td>\n";
+	dot << "<font point-size=\"10\">" << c << "</font></td></tr></table>\n";
+	dot << ">];\n";
+
+	for (auto const &child : c->get_children()) {
+		dot << dump_dot_small (child);
+		dot << "obj_" << c << " -> obj_" << child << ";\n";
+	}
+
+	return dot.str();
+}
+/**
  * display_pool
  */
 void
@@ -863,100 +951,6 @@ display_pool (int offset)
 
 
 /**
- * display_tl_instance
- */
-std::string display_tl_instance (const CPtr &c)
-{
-	// dump an instance
-	// for each child
-	//   dump child instance
-	// link this and children
-
-	std::stringstream dot;
-	std::string name;
-
-	name = c->name;
-	if (name.empty())
-		name = "c";
-
-	dot << "\n";
-	dot << "// " << c << "\n";
-
-	std::string colour;
-	if (name == "disk")
-		colour = "#ffc0c0";	// red
-	else if (name == "partition")
-		colour = "#d0d080";	// yellow
-	else if (name == "filesystem")
-		colour = "#80c080";	// green
-	else
-		colour = "#c0c0c0";	// grey
-
-	dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\"><tr><td>\n";
-	dot << "<font point-size=\"16\"><b>" << (char)toupper(name[0]) << "</b></font> (" << c->get_seqnum() << ")</td></tr><tr><td>\n";
-	dot << "<font point-size=\"10\">" << c << "</font></td></tr></table>\n";
-	dot << ">];\n";
-
-	for (auto const &child : c->get_children()) {
-		dot << display_tl_instance (child);
-		dot << "obj_" << c << " -> obj_" << child << ";\n";
-	}
-
-	return dot.str();
-}
-
-/**
- * display_timeline
- */
-void
-display_timeline (const Timeline &tl)
-{
-	if (tl.timeline.size() == 0)
-		return;
-
-	std::stringstream dot;
-	std::string desc;
-	int count = 1;
-
-	dot << "digraph disks {\n";
-	dot << "graph [ rankdir=\"TB\", color=\"white\",bgcolor=\"#000000\" ];\n";
-	dot << "node [ shape=\"record\", color=\"black\", fillcolor=\"lightcyan\", style=\"filled\" ];\n";
-	dot << "edge [ penwidth=3.0,color=\"#cccccc\" ];\n";
-	dot << "\n";
-
-	for (auto t : tl.timeline) {
-		CPtr c;
-
-		std::tie (std::ignore, c, desc) = t;
-
-		if (!c) {
-			std::cout << "empty ptr\n";
-			continue;
-		}
-
-		dot << "subgraph cluster_" << count++ << " { color=red;\n";
-		dot << "fontcolor = \"white\";\n";
-		dot << "label = \"" + desc + "\";\n";
-		dot << display_tl_instance (c);
-		dot << "}\n";
-	}
-
-	dot << "\n}";
-	dot << "\n";
-
-	std::string input = dot.str();
-	//std::cout << input << std::endl;
-
-	int offset = 0;
-	int screen_x = -1-(offset*400);
-
-	std::string command = "dot -Tpng | display -title \"timeline:" + std::to_string(count-1) + "\" -gravity NorthEast -geometry " + std::to_string(screen_x) + "+0 -resize 80% - &";
-
-	execute_command (command, input);
-}
-
-
-/**
  * main
  */
 int main (int, char *[])
@@ -993,6 +987,8 @@ int main (int, char *[])
 	d->add_child (p2);
 	p2->add_child (f2);
 
+	tl.backup (d, "initial");
+
 	old = d->backup();
 	tl.push (Action(c, old, "initial"));
 
@@ -1008,10 +1004,10 @@ int main (int, char *[])
 	d->remove_child(1);
 	display_dot (c, 0, "objects");
 
-	//tl->restore();
+	//tl.restore();
 
 	//tl.dump();
-	display_timeline (tl);
+	tl.display();
 
 	return 0;
 }

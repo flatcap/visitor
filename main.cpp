@@ -76,6 +76,7 @@ int main (int, char *[])
 
 	display_dot (c, 2, "initial");
 	d->remove_child(1);
+	f1->set_label ("XXX");
 	display_dot (c, 1, "deleted");
 	tl.restore();
 	display_dot (c, 0, "restored");

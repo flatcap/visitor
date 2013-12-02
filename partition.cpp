@@ -30,70 +30,10 @@ Partition::Partition (void) :
 }
 
 /**
- * Partition (copy)
- */
-Partition::Partition (const Partition &p) :
-	Container (p),
-	id (p.id)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-/**
  * ~Partition
  */
 Partition::~Partition()
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-
-/**
- * operator=
- */
-Partition &
-Partition::operator= (const Partition &p)
-{
-	Container::operator= (p);
-
-	id = p.id;
-
-	return *this;
-}
-
-
-/**
- * create (static)
- */
-PPtr
-Partition::create (void)
-{
-	PPtr p (new Partition);
-
-	return p;
-}
-
-
-/**
- * backup
- */
-CPtr
-Partition::backup (void)
-{
-	//Container::backup();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-	CPtr old (new Partition (*this));
-	return old;
-}
-
-/**
- * restore
- */
-void
-Partition::restore (void)
-{
-	Container::restore();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 

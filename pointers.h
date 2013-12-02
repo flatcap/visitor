@@ -20,13 +20,11 @@
 
 #include <memory>
 
-class Timeline;
 class Container;
 class Disk;
 class Partition;
 class Filesystem;
 
-typedef std::shared_ptr<Timeline>   TPtr;
 typedef std::shared_ptr<Container>  CPtr;
 typedef std::shared_ptr<Disk>       DPtr;
 typedef std::shared_ptr<Partition>  PPtr;

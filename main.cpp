@@ -27,7 +27,6 @@
 
 #include "pointers.h"
 
-#include "timeline.h"
 #include "container.h"
 #include "disk.h"
 #include "partition.h"
@@ -39,13 +38,13 @@
  */
 int main (int, char *[])
 {
-	CPtr c  = Container::create();
+	CPtr c  = std::make_shared<Container>();
 
-	DPtr d  = Disk::create();
-	PPtr p1 = Partition::create();
-	PPtr p2 = Partition::create();
-	FPtr f1 = Filesystem::create();
-	FPtr f2 = Filesystem::create();
+	DPtr d  = std::make_shared<Disk>();
+	PPtr p1 = std::make_shared<Partition>();
+	PPtr p2 = std::make_shared<Partition>();
+	FPtr f1 = std::make_shared<Filesystem>();
+	FPtr f2 = std::make_shared<Filesystem>();
 
 	d->set_size   (1234);
 	d->set_device ("/dev/loop0");
@@ -62,24 +61,13 @@ int main (int, char *[])
 	f2->set_size   (240);
 	f2->set_label  ("hatstand");
 
-	Timeline tl;
-
 	c->add_child (d);
 	d->add_child (p1);
 	p1->add_child (f1);
 	d->add_child (p2);
 	p2->add_child (f2);
 
-	tl.backup (d, "initial");
-	//tl.dump();
-	tl.display();
-
 	display_dot (c, 2, "initial");
-	d->remove_child(1);
-	f1->set_label ("XXX");
-	display_dot (c, 1, "deleted");
-	tl.restore();
-	display_dot (c, 0, "restored");
 
 	return 0;
 }

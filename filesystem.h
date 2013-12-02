@@ -27,15 +27,7 @@ class Filesystem : public Container
 {
 public:
 	Filesystem (void);
-	Filesystem (const Filesystem &f);
 	virtual ~Filesystem();
-
-	Filesystem & operator= (const Filesystem &f);
-
-	static FPtr create (void);
-
-	virtual CPtr backup (void);
-	virtual void restore (void);
 
 	std::string get_label (void);
 	std::string set_label (const std::string &value);

@@ -29,70 +29,10 @@ Filesystem::Filesystem (void)
 }
 
 /**
- * Filesystem (copy)
- */
-Filesystem::Filesystem (const Filesystem &f) :
-	Container (f),
-	label (f.label)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-/**
  * ~Filesystem
  */
 Filesystem::~Filesystem()
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-
-/**
- * operator=
- */
-Filesystem &
-Filesystem::operator= (const Filesystem &f)
-{
-	Container::operator= (f);
-
-	label = f.label;
-
-	return *this;
-}
-
-
-/**
- * create (static)
- */
-FPtr
-Filesystem::create (void)
-{
-	FPtr f (new Filesystem);
-
-	return f;
-}
-
-
-/**
- * backup
- */
-CPtr
-Filesystem::backup (void)
-{
-	//Container::backup();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-	CPtr old (new Filesystem (*this));
-	return old;
-}
-
-/**
- * restore
- */
-void
-Filesystem::restore (void)
-{
-	Container::restore();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 

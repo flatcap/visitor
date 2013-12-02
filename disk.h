@@ -27,15 +27,7 @@ class Disk : public Container
 {
 public:
 	Disk (void);
-	Disk (const Disk &d);
 	virtual ~Disk();
-
-	Disk & operator= (const Disk &d);
-
-	static DPtr create (void);
-
-	virtual CPtr backup (void);
-	virtual void restore (void);
 
 	std::string get_device (void);
 	std::string set_device (std::string value);

@@ -29,116 +29,11 @@ Container::Container (void) :
 }
 
 /**
- * Container (copy)
- */
-Container::Container (const Container &c) :
-	Backup (c),
-	name (c.name),
-	size (c.size)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-	for (auto child : c.children) {
-		children.push_back (child->backup());
-	}
-}
-
-/**
  * ~Container
  */
 Container::~Container()
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-
-/**
- * operator=
- */
-Container &
-Container::operator= (const Container &c)
-{
-	Backup::operator= (c);
-
-	name     = c.name;
-	size     = c.size;
-	children = c.children;
-
-	return *this;
-}
-
-
-/**
- * new
- */
-void *
-Container::operator new (size_t size)
-{
-	Container *c = (Container*) ::operator new (size);
-
-#if 0
-	std::cout << "new object " << c << std::endl;
-#endif
-
-	return c;
-}
-
-/**
- * delete
- */
-void
-Container::operator delete (void *ptr)
-{
-	if (!ptr)
-		return;
-
-#if 0
-	Container *c = (Container *) (ptr);
-	std::cout << "delete object " << c << std::endl;
-#endif
-
-	::operator delete (ptr);
-}
-
-
-/**
- * create (static)
- */
-CPtr
-Container::create (void)
-{
-	CPtr c (new Container);
-
-	return c;
-}
-
-
-/**
- * backup
- */
-CPtr
-Container::backup (void)
-{
-	//Backup::backup();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-	CPtr old (new Container (*this));
-	return old;
-}
-
-/**
- * restore
- */
-void
-Container::restore (void)
-{
-	Backup::restore();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-	changed();
-	for (auto c : children) {
-		c->restore();
-	}
 }
 
 

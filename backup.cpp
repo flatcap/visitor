@@ -31,55 +31,10 @@ Backup::Backup() :
 }
 
 /**
- * Backup (copy)
- */
-Backup::Backup (const Backup &b) :
-	seqnum (b.seqnum)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-/**
  * ~Backup
  */
 Backup::~Backup()
 {
-}
-
-
-/**
- * operator=
- */
-Backup &
-Backup::operator= (const Backup &b)
-{
-	// DON'T copy seqnum
-	// Nothing to do, for now
-
-	return *this;
-}
-
-
-/**
- * backup
- */
-CPtr
-Backup::backup (void)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
-
-	return nullptr;
-}
-
-/**
- * restore
- */
-void
-Backup::restore (void)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	seqnum = (seqnum+100)/100*100;
 }
 
 

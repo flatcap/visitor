@@ -27,15 +27,7 @@ class Partition : public Container
 {
 public:
 	Partition (void);
-	Partition (const Partition &p);
 	virtual ~Partition();
-
-	Partition & operator= (const Partition &p);
-
-	static PPtr create (void);
-
-	virtual CPtr backup (void);
-	virtual void restore (void);
 
 	int get_id (void);
 	int set_id (int value);

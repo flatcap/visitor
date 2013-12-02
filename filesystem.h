@@ -27,7 +27,7 @@ class Filesystem : public Container
 {
 public:
 	Filesystem (void);
-	virtual ~Filesystem();
+	virtual ~Filesystem() = default;
 
 	std::string get_label (void);
 	std::string set_label (const std::string &value);

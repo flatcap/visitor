@@ -27,7 +27,7 @@ class Backup
 {
 public:
 	Backup();
-	virtual ~Backup();
+	virtual ~Backup() = default;
 
 	int get_seqnum (void);
 

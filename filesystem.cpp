@@ -24,16 +24,7 @@
  */
 Filesystem::Filesystem (void)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	name = "filesystem";
-}
-
-/**
- * ~Filesystem
- */
-Filesystem::~Filesystem()
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 

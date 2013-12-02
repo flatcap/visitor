@@ -27,7 +27,7 @@ class Disk : public Container
 {
 public:
 	Disk (void);
-	virtual ~Disk();
+	virtual ~Disk() = default;
 
 	std::string get_device (void);
 	std::string set_device (std::string value);

@@ -24,16 +24,7 @@
  */
 Disk::Disk (void)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	name = "disk";
-}
-
-/**
- * ~Disk
- */
-Disk::~Disk()
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 

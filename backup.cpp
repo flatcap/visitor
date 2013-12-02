@@ -30,13 +30,6 @@ Backup::Backup() :
 	base_seqnum += 1000;
 }
 
-/**
- * ~Backup
- */
-Backup::~Backup()
-{
-}
-
 
 /**
  * get_seqnum
@@ -57,7 +50,6 @@ Backup::changed (void)
 	if (seqnum < 1)
 		return;
 
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	seqnum++;
 }
 

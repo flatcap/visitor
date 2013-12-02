@@ -22,19 +22,9 @@
 /**
  * Partition (default)
  */
-Partition::Partition (void) :
-	id(0)
+Partition::Partition (void)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	name = "partition";
-}
-
-/**
- * ~Partition
- */
-Partition::~Partition()
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 

@@ -22,18 +22,9 @@
 /**
  * Container (default)
  */
-Container::Container (void) :
-	size(0)
+Container::Container (void)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-/**
- * ~Container
- */
-Container::~Container()
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	name = "container";
 }
 
 
@@ -58,6 +49,7 @@ Container::set_size (int value)
 	return old;
 }
 
+
 /**
  * add_child
  */
@@ -81,6 +73,7 @@ Container::remove_child (size_t index)
 	children.erase (children.begin()+index);
 	changed();
 }
+
 
 /**
  * get_children

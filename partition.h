@@ -27,13 +27,13 @@ class Partition : public Container
 {
 public:
 	Partition (void);
-	virtual ~Partition();
+	virtual ~Partition() = default;
 
 	int get_id (void);
 	int set_id (int value);
 
 private:
-	int id;
+	int id = 0;
 };
 
 

@@ -30,17 +30,19 @@ class Container : public Backup
 {
 public:
 	Container (void);
-	virtual ~Container();
+	virtual ~Container() = default;
 
 	int get_size (void);
 	int set_size (int value);
+
 	int add_child (CPtr child);
 	void remove_child (size_t index);
+
 	const std::vector<CPtr>& get_children (void);
 
 	std::string name;
 private:
-	int size;
+	int size = 0;
 	std::vector<CPtr> children;
 };
 

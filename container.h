@@ -21,12 +21,11 @@
 #include <vector>
 
 #include "pointers.h"
-#include "backup.h"
 
 /**
  * class Container
  */
-class Container : public Backup
+class Container
 {
 public:
 	Container (void);
@@ -35,13 +34,19 @@ public:
 	int get_size (void);
 	int set_size (int value);
 
+	int get_seqnum (void);
+
 	int add_child (CPtr child);
 	void remove_child (size_t index);
 
 	const std::vector<CPtr>& get_children (void);
 
 	std::string name;
+protected:
+	void changed (void);
+
 private:
+	int seqnum = 1;
 	int size = 0;
 	std::vector<CPtr> children;
 };

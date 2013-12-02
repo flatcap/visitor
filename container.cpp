@@ -19,11 +19,16 @@
 
 #include "container.h"
 
+static int base_seqnum = 1000;
+
 /**
  * Container (default)
  */
 Container::Container (void)
 {
+	seqnum = base_seqnum;
+	base_seqnum += 1000;
+
 	name = "container";
 }
 
@@ -83,3 +88,27 @@ Container::get_children (void)
 {
 	return children;
 }
+
+
+/**
+ * get_seqnum
+ */
+int
+Container::get_seqnum (void)
+{
+	return seqnum;
+}
+
+
+/**
+ * changed
+ */
+void
+Container::changed (void)
+{
+	if (seqnum < 1)
+		return;
+
+	seqnum++;
+}
+

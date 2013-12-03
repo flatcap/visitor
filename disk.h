@@ -29,6 +29,8 @@ public:
 	Disk (void);
 	virtual ~Disk() = default;
 
+	void accept_visitor (Visitor& v);
+
 	std::string get_device (void);
 	std::string set_device (std::string value);
 

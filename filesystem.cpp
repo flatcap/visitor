@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "filesystem.h"
+#include "visitor.h"
 
 /**
  * Filesystem (default)
@@ -25,6 +26,17 @@
 Filesystem::Filesystem (void)
 {
 	name = "filesystem";
+}
+
+
+/**
+ * accept_visitor
+ */
+void
+Filesystem::accept_visitor (Visitor& v)
+{
+	v.visit (*this);
+	visit_children (v);
 }
 
 

@@ -29,6 +29,8 @@ public:
 	Partition (void);
 	virtual ~Partition() = default;
 
+	void accept_visitor (Visitor& v);
+
 	int get_id (void);
 	int set_id (int value);
 

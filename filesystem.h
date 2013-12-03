@@ -29,6 +29,8 @@ public:
 	Filesystem (void);
 	virtual ~Filesystem() = default;
 
+	void accept_visitor (Visitor& v);
+
 	std::string get_label (void);
 	std::string set_label (const std::string &value);
 

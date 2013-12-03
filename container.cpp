@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "container.h"
+#include "visitor.h"
 
 static int base_seqnum = 1000;
 
@@ -30,6 +31,28 @@ Container::Container (void)
 	base_seqnum += 1000;
 
 	name = "container";
+}
+
+
+/**
+ * visit_children
+ */
+void
+Container::visit_children (Visitor& v)
+{
+	for (auto c : children) {
+		c->accept_visitor (v);
+	}
+}
+
+/**
+ * accept_visitor
+ */
+void
+Container::accept_visitor (Visitor& v)
+{
+	v.visit (*this);
+	visit_children (v);
 }
 
 

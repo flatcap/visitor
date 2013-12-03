@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "partition.h"
+#include "visitor.h"
 
 /**
  * Partition (default)
@@ -25,6 +26,17 @@
 Partition::Partition (void)
 {
 	name = "partition";
+}
+
+
+/**
+ * accept_visitor
+ */
+void
+Partition::accept_visitor (Visitor& v)
+{
+	v.visit (*this);
+	visit_children (v);
 }
 
 

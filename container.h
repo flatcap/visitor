@@ -22,6 +22,8 @@
 
 #include "pointers.h"
 
+class Visitor;
+
 /**
  * class Container
  */
@@ -30,6 +32,8 @@ class Container
 public:
 	Container (void);
 	virtual ~Container() = default;
+
+	virtual void accept_visitor (Visitor& v);
 
 	int get_size (void);
 	int set_size (int value);
@@ -42,8 +46,11 @@ public:
 	const std::vector<CPtr>& get_children (void);
 
 	std::string name;
+
 protected:
 	void changed (void);
+
+	void visit_children (Visitor& v);
 
 private:
 	int seqnum = 1;

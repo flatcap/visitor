@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "disk.h"
+#include "visitor.h"
 
 /**
  * Disk (default)
@@ -25,6 +26,17 @@
 Disk::Disk (void)
 {
 	name = "disk";
+}
+
+
+/**
+ * accept_visitor
+ */
+void
+Disk::accept_visitor (Visitor& v)
+{
+	v.visit (*this);
+	visit_children (v);
 }
 
 

@@ -32,6 +32,7 @@
 #include "partition.h"
 #include "filesystem.h"
 #include "dot.h"
+#include "visitor.h"
 
 /**
  * main
@@ -66,6 +67,9 @@ int main (int, char *[])
 	p1->add_child (f1);
 	d->add_child (p2);
 	p2->add_child (f2);
+
+	Visitor v;
+	c->accept_visitor(v);
 
 	display_dot (c, 2, "initial");
 

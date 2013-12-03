@@ -16,26 +16,20 @@
  */
 
 #include <iostream>
-#include <string>
 
-#include "visitor.h"
-
-#include "container.h"
-#include "disk.h"
-#include "partition.h"
-#include "filesystem.h"
+#include "dot_visitor.h"
 
 /**
- * Visitor
+ * DotVisitor
  */
-Visitor::Visitor (void)
+DotVisitor::DotVisitor (void)
 {
 }
 
 /**
- * ~Visitor
+ * ~DotVisitor
  */
-Visitor::~Visitor()
+DotVisitor::~DotVisitor()
 {
 }
 
@@ -44,36 +38,46 @@ Visitor::~Visitor()
  * visit (Container)
  */
 void
-Visitor::visit (const Container& c)
+DotVisitor::visit (const Container& c)
 {
-	std::cout << "Visited Container: " << &c << std::endl;
+	std::cout << "DotVisited Container: " << &c << std::endl;
 }
 
 /**
  * visit (Disk)
  */
 void
-Visitor::visit (const Disk& d)
+DotVisitor::visit (const Disk& d)
 {
-	std::cout << "Visited Disk: " << &d << std::endl;
+	std::cout << "DotVisited Disk: " << &d << std::endl;
 }
 
 /**
  * visit (Partition)
  */
 void
-Visitor::visit (const Partition& p)
+DotVisitor::visit (const Partition& p)
 {
-	std::cout << "Visited Partition: " << &p << std::endl;
+	std::cout << "DotVisited Partition: " << &p << std::endl;
 }
 
 /**
  * visit (Filesystem)
  */
 void
-Visitor::visit (const Filesystem& f)
+DotVisitor::visit (const Filesystem& f)
 {
-	std::cout << "Visited Filesystem: " << &f << std::endl;
+	std::cout << "DotVisited Filesystem: " << &f << std::endl;
+}
+
+
+/**
+ * get_output
+ */
+const std::string&
+DotVisitor::get_output (void)
+{
+	return output;
 }
 
 

@@ -15,65 +15,33 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <iostream>
+#ifndef _DOT_VISITOR_H_
+#define _DOT_VISITOR_H_
+
 #include <string>
 
 #include "visitor.h"
 
-#include "container.h"
-#include "disk.h"
-#include "partition.h"
-#include "filesystem.h"
-
 /**
- * Visitor
+ * class DotVisitor
  */
-Visitor::Visitor (void)
+class DotVisitor : public Visitor
 {
-}
+public:
+	DotVisitor (void);
+	virtual ~DotVisitor();
 
-/**
- * ~Visitor
- */
-Visitor::~Visitor()
-{
-}
+	virtual void visit (const Container&  c);
+	virtual void visit (const Disk&       d);
+	virtual void visit (const Partition&  p);
+	virtual void visit (const Filesystem& f);
+
+	const std::string& get_output (void);
+
+protected:
+	std::string output;
+};
 
 
-/**
- * visit (Container)
- */
-void
-Visitor::visit (const Container& c)
-{
-	std::cout << "Visited Container: " << &c << std::endl;
-}
-
-/**
- * visit (Disk)
- */
-void
-Visitor::visit (const Disk& d)
-{
-	std::cout << "Visited Disk: " << &d << std::endl;
-}
-
-/**
- * visit (Partition)
- */
-void
-Visitor::visit (const Partition& p)
-{
-	std::cout << "Visited Partition: " << &p << std::endl;
-}
-
-/**
- * visit (Filesystem)
- */
-void
-Visitor::visit (const Filesystem& f)
-{
-	std::cout << "Visited Filesystem: " << &f << std::endl;
-}
-
+#endif // _DOT_VISITOR_H_
 

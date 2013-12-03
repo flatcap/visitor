@@ -23,6 +23,9 @@ class Disk;
 class Partition;
 class Filesystem;
 
+/**
+ * class Visitor
+ */
 class Visitor
 {
 public:
@@ -37,6 +40,7 @@ public:
 protected:
 
 };
+
 
 #endif // _VISITOR_H_
 

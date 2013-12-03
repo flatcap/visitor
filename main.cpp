@@ -33,6 +33,7 @@
 #include "filesystem.h"
 #include "dot.h"
 #include "visitor.h"
+#include "dot_visitor.h"
 
 /**
  * main
@@ -68,10 +69,17 @@ int main (int, char *[])
 	d->add_child (p2);
 	p2->add_child (f2);
 
+#if 0
 	Visitor v;
 	c->accept_visitor(v);
+#endif
 
-	display_dot (c, 2, "initial");
+	DotVisitor dv;
+	c->accept_visitor (dv);
+
+	std::cout << dv.get_output();
+
+	//display_dot (c, 2, "initial");
 
 	return 0;
 }

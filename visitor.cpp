@@ -46,7 +46,7 @@ Visitor::~Visitor()
 void
 Visitor::visit (const Container& c)
 {
-	std::cout << "Visited Container: " << &c << std::endl;
+	std::cout << "Visited Container: " <<& c << std::endl;
 }
 
 /**
@@ -55,7 +55,7 @@ Visitor::visit (const Container& c)
 void
 Visitor::visit (const Disk& d)
 {
-	std::cout << "Visited Disk: " << &d << std::endl;
+	std::cout << "Visited Disk: " <<& d << std::endl;
 }
 
 /**
@@ -64,7 +64,7 @@ Visitor::visit (const Disk& d)
 void
 Visitor::visit (const Partition& p)
 {
-	std::cout << "Visited Partition: " << &p << std::endl;
+	std::cout << "Visited Partition: " <<& p << std::endl;
 }
 
 /**
@@ -73,7 +73,7 @@ Visitor::visit (const Partition& p)
 void
 Visitor::visit (const Filesystem& f)
 {
-	std::cout << "Visited Filesystem: " << &f << std::endl;
+	std::cout << "Visited Filesystem: " <<& f << std::endl;
 }
 
 

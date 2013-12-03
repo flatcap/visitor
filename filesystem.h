@@ -32,7 +32,7 @@ public:
 	void accept_visitor (Visitor& v);
 
 	std::string get_label (void);
-	std::string set_label (const std::string &value);
+	std::string set_label (const std::string& value);
 
 private:
 	std::string label;

@@ -29,7 +29,7 @@
  * dot_row (bool)
  */
 std::string
-dot_row (const char *name, bool value)
+dot_row (const char* name, bool value)
 {
 	std::stringstream output;
 
@@ -46,7 +46,7 @@ dot_row (const char *name, bool value)
  * dot_row (int)
  */
 std::string
-dot_row (const char *name, int value)
+dot_row (const char* name, int value)
 {
 	std::stringstream output;
 
@@ -63,7 +63,7 @@ dot_row (const char *name, int value)
  * dot_row (long)
  */
 std::string
-dot_row (const char *name, long value)
+dot_row (const char* name, long value)
 {
 	std::stringstream output;
 
@@ -80,7 +80,7 @@ dot_row (const char *name, long value)
  * dot_row (std::string)
  */
 std::string
-dot_row (const char *name, const std::string &value)
+dot_row (const char* name, const std::string& value)
 {
 	std::stringstream output;
 
@@ -97,7 +97,7 @@ dot_row (const char *name, const std::string &value)
  * dot_row (std::stringstream)
  */
 std::string
-dot_row (const char *name, const std::stringstream &value)
+dot_row (const char* name, const std::stringstream& value)
 {
 	std::stringstream output;
 
@@ -111,10 +111,10 @@ dot_row (const char *name, const std::stringstream &value)
 }
 
 /**main
- * dot_row (char *)
+ * dot_row (char* )
  */
 std::string
-dot_row (const char *name, const char *value)
+dot_row (const char* name, const char* value)
 {
 	std::stringstream output;
 
@@ -131,7 +131,7 @@ dot_row (const char *name, const char *value)
  * dot_row (unsigned int)
  */
 std::string
-dot_row (const char *name, unsigned int value)
+dot_row (const char* name, unsigned int value)
 {
 	std::stringstream output;
 
@@ -145,10 +145,10 @@ dot_row (const char *name, unsigned int value)
 }
 
 /**
- * dot_row (void *)
+ * dot_row (void*)
  */
 std::string
-dot_row (const char *name, void *value)
+dot_row (const char* name, void* value)
 {
 	std::stringstream output;
 
@@ -166,10 +166,10 @@ dot_row (const char *name, void *value)
 }
 
 /**
- * dot_row (CPtr &)
+ * dot_row (CPtr&)
  */
 std::string
-dot_row (const char *name, const CPtr &value)
+dot_row (const char* name, const CPtr& value)
 {
 	std::stringstream output;
 	std::string dest;
@@ -192,7 +192,7 @@ dot_row (const char *name, const CPtr &value)
  * dot_container
  */
 std::string
-dot_container (const CPtr &c)
+dot_container (const CPtr& c)
 {
 	std::stringstream output;
 
@@ -207,7 +207,7 @@ dot_container (const CPtr &c)
  * dot_disk
  */
 std::string
-dot_disk (const CPtr &c)
+dot_disk (const CPtr& c)
 {
 	std::stringstream output;
 
@@ -224,7 +224,7 @@ dot_disk (const CPtr &c)
  * dot_partition
  */
 std::string
-dot_partition (const CPtr &c)
+dot_partition (const CPtr& c)
 {
 	std::stringstream output;
 
@@ -241,7 +241,7 @@ dot_partition (const CPtr &c)
  * dot_filesystem
  */
 std::string
-dot_filesystem (const CPtr &c)
+dot_filesystem (const CPtr& c)
 {
 	std::stringstream output;
 
@@ -259,7 +259,7 @@ dot_filesystem (const CPtr &c)
  * dump_dot_inner
  */
 std::string
-dump_dot_inner (const std::vector <CPtr> &v)
+dump_dot_inner (const std::vector <CPtr>& v)
 {
 	std::stringstream dot;
 
@@ -287,7 +287,7 @@ dump_dot_inner (const std::vector <CPtr> &v)
 
 		dot << "</table>>];\n";
 
-		for (auto const &c2 : c->get_children()) {
+		for (auto const& c2 : c->get_children()) {
 			dot << "obj_" << c << " -> obj_" << c2 << ";\n";
 		}
 
@@ -301,7 +301,7 @@ dump_dot_inner (const std::vector <CPtr> &v)
  * dump_dot
  */
 std::string
-dump_dot (const std::vector <CPtr> &v)
+dump_dot (const std::vector <CPtr>& v)
 {
 	std::stringstream dot;
 
@@ -322,14 +322,14 @@ dump_dot (const std::vector <CPtr> &v)
  * display_dot
  */
 void
-display_dot (const CPtr c, int offset, const std::string &title)
+display_dot (const CPtr c, int offset, const std::string& title)
 {
 	std::string input = dump_dot(c->get_children());
 	//std::cout << input << std::endl;
 
 	int screen_x = -1-(offset*400);
 
-	std::string command = "dot -Tpng | display -title \"" + title + "\" -gravity NorthEast -geometry " + std::to_string(screen_x) + "-40 -resize 70% - &";
+	std::string command = "dot -Tpng | display -title \"" + title + "\" -gravity NorthEast -geometry " + std::to_string(screen_x) + "-40 -resize 70% -& ";
 
 	execute_command (command, input);
 }
@@ -339,7 +339,7 @@ display_dot (const CPtr c, int offset, const std::string &title)
  * dump_dot_small
  */
 std::string
-dump_dot_small (const CPtr &c)
+dump_dot_small (const CPtr& c)
 {
 	// dump an instance
 	// for each child
@@ -367,7 +367,7 @@ dump_dot_small (const CPtr &c)
 	dot << "<font point-size=\"10\">" << c << "</font></td></tr></table>\n";
 	dot << ">];\n";
 
-	for (auto const &child : c->get_children()) {
+	for (auto const& child : c->get_children()) {
 		dot << dump_dot_small (child);
 		dot << "obj_" << c << " -> obj_" << child << ";\n";
 	}

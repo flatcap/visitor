@@ -53,7 +53,7 @@ Filesystem::get_label (void)
  * set_label
  */
 std::string
-Filesystem::set_label (const std::string &value)
+Filesystem::set_label (const std::string& value)
 {
 	std::string old = label;
 	label = value;

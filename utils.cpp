@@ -22,7 +22,7 @@
  * execute_command
  */
 unsigned int
-execute_command (const std::string &command, std::string &input)
+execute_command (const std::string& command, std::string& input)
 {
 	FILE *file = nullptr;
 	int count = 0;

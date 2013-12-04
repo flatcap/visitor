@@ -33,7 +33,7 @@ public:
 	Container (void);
 	virtual ~Container() = default;
 
-	virtual bool accept_visitor (Visitor& v);
+	virtual bool accept (Visitor& v);
 
 	int get_size (void) const;
 	int set_size (int value);

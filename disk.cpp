@@ -30,10 +30,10 @@ Disk::Disk (void)
 
 
 /**
- * accept_visitor
+ * accept
  */
 bool
-Disk::accept_visitor (Visitor& v)
+Disk::accept (Visitor& v)
 {
 	if (!v.visit (*this))
 		return false;

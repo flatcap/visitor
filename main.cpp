@@ -70,10 +70,10 @@ int main (int, char *[])
 	p2->add_child (f2);
 
 	DumpVisitor v;
-	c->accept_visitor(v);
+	c->accept(v);
 
 	DotVisitor dv;
-	c->accept_visitor (dv);
+	c->accept (dv);
 	dv.run_dotty ("objects");
 
 	return 0;

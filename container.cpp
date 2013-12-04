@@ -44,7 +44,7 @@ Container::visit_children (Visitor& v)
 		return false;
 
 	for (auto c : children) {
-		if (!c->accept_visitor (v))
+		if (!c->accept (v))
 			return false;
 	}
 
@@ -55,10 +55,10 @@ Container::visit_children (Visitor& v)
 }
 
 /**
- * accept_visitor
+ * accept
  */
 bool
-Container::accept_visitor (Visitor& v)
+Container::accept (Visitor& v)
 {
 	if (!v.visit (*this))
 		return false;

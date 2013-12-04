@@ -30,10 +30,10 @@ Partition::Partition (void)
 
 
 /**
- * accept_visitor
+ * accept
  */
 bool
-Partition::accept_visitor (Visitor& v)
+Partition::accept (Visitor& v)
 {
 	if (!v.visit (*this))
 		return false;

@@ -30,10 +30,10 @@ Filesystem::Filesystem (void)
 
 
 /**
- * accept_visitor
+ * accept
  */
 bool
-Filesystem::accept_visitor (Visitor& v)
+Filesystem::accept (Visitor& v)
 {
 	if (!v.visit (*this))
 		return false;

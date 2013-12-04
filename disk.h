@@ -29,7 +29,7 @@ public:
 	Disk (void);
 	virtual ~Disk() = default;
 
-	bool accept_visitor (Visitor& v);
+	bool accept (Visitor& v);
 
 	std::string get_device (void) const;
 	std::string set_device (std::string value);

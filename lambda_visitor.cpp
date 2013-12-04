@@ -15,30 +15,41 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VISITOR_H_
-#define _VISITOR_H_
+#include <iostream>
+#include <string>
 
-class Container;
-class Disk;
-class Partition;
-class Filesystem;
+#include "lambda_visitor.h"
+
+#include "container.h"
+#include "disk.h"
+#include "partition.h"
+#include "filesystem.h"
 
 /**
- * class Visitor
+ * LambdaVisitor
  */
-class Visitor
+LambdaVisitor::LambdaVisitor (Selector s) :
+	selector(s)
 {
-public:
-	virtual bool visit_enter (const Container& c) { return true; }
-	virtual bool visit_leave (void)               { return true; }
+}
 
-	virtual bool visit (const Container&  c) = 0;
-
-	virtual bool visit (const Disk&       d) { return visit ((const Container&) d); }
-	virtual bool visit (const Partition&  p) { return visit ((const Container&) p); }
-	virtual bool visit (const Filesystem& f) { return visit ((const Container&) f); }
-};
+/**
+ * ~LambdaVisitor
+ */
+LambdaVisitor::~LambdaVisitor()
+{
+}
 
 
-#endif // _VISITOR_H_
+/**
+ * visit (Container)
+ */
+bool
+LambdaVisitor::visit (const Container& c)
+{
+	if (selector (c))
+		std::cout << "[" << c.name << "]: " << &c << " : " << c.get_size() << std::endl;
+
+	return true;
+}
 

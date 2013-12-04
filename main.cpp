@@ -34,6 +34,16 @@
 
 #include "dump_visitor.h"
 #include "dot_visitor.h"
+#include "lambda_visitor.h"
+
+/**
+ * select
+ */
+bool
+choose (const Container& c)
+{
+	return (c.name == "filesystem");
+}
 
 /**
  * main
@@ -69,12 +79,35 @@ int main (int, char *[])
 	d->add_child (p2);
 	p2->add_child (f2);
 
+#if 0
 	DumpVisitor v;
 	c->accept(v);
+#endif
 
+#if 0
 	DotVisitor dv;
 	c->accept (dv);
 	dv.run_dotty ("objects");
+#endif
+
+	struct {
+		bool operator() (const Container& c)
+		{
+			return c.name == "filesystem";
+		}
+	} functor;
+
+	LambdaVisitor lv1 (functor);
+	c->accept (lv1);
+	std::cout << std::endl;
+
+	LambdaVisitor lv2 (choose);
+	c->accept (lv2);
+	std::cout << std::endl;
+
+	LambdaVisitor lv3 ([] (const Container& c) { return (c.name == "filesystem"); });
+	c->accept (lv2);
+	std::cout << std::endl;
 
 	return 0;
 

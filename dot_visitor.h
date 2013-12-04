@@ -31,10 +31,10 @@ public:
 	DotVisitor (void);
 	virtual ~DotVisitor();
 
-	virtual void visit (const Container&  c);
-	virtual void visit (const Disk&       d);
-	virtual void visit (const Partition&  p);
-	virtual void visit (const Filesystem& f);
+	virtual void visit (const Container& parent, const Container&  c);
+	virtual void visit (const Container& parent, const Disk&       d);
+	virtual void visit (const Container& parent, const Partition&  p);
+	virtual void visit (const Container& parent, const Filesystem& f);
 
 	const std::string& get_output (void);
 

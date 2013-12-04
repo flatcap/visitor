@@ -37,22 +37,32 @@ Container::Container (void)
 /**
  * visit_children
  */
-void
+bool
 Container::visit_children (Visitor& v)
 {
+	if (!v.visit_enter (*this))
+		return false;
+
 	for (auto c : children) {
-		c->accept_visitor (v);
+		if (!c->accept_visitor (v))
+			return false;
 	}
+
+	if (!v.visit_leave())
+		return false;
+
+	return true;
 }
 
 /**
  * accept_visitor
  */
-void
+bool
 Container::accept_visitor (Visitor& v)
 {
-	v.visit (*this);
-	visit_children (v);
+	if (!v.visit (*this))
+		return false;
+	return visit_children (v);
 }
 
 
@@ -60,7 +70,7 @@ Container::accept_visitor (Visitor& v)
  * get_size
  */
 int
-Container::get_size (void)
+Container::get_size (void) const
 {
 	return size;
 }

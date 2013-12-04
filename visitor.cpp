@@ -41,39 +41,87 @@ Visitor::~Visitor()
 
 
 /**
+ * indent
+ */
+static void
+indent (int depth)
+{
+	for (int i = 0; i < depth; i++)
+		std::cout << '\t';
+}
+
+
+/**
+ * visit_enter
+ */
+bool
+Visitor::visit_enter (const Container& c)
+{
+#if 0
+	indent (depth);
+	std::cout << "Visit Enter: " << &c << std::endl;
+#endif
+	depth++;
+	return true;
+}
+
+/**
+ * visit_leave
+ */
+bool
+Visitor::visit_leave (void)
+{
+	depth--;
+#if 0
+	indent (depth);
+	std::cout << "Visit Leave" <<  std::endl;
+#endif
+	return true;
+}
+
+
+/**
  * visit (Container)
  */
-void
+bool
 Visitor::visit (const Container& c)
 {
-	std::cout << "Visited Container: " << &c << std::endl;
+	indent (depth);
+	std::cout << "[Container]: " << &c << " : " << c.get_size() << std::endl;
+	return true;
 }
 
 /**
  * visit (Disk)
  */
-void
+bool
 Visitor::visit (const Disk& d)
 {
-	std::cout << "Visited Disk: " << &d << std::endl;
+	indent (depth);
+	std::cout << "[Disk] : " << &d << " : " << d.get_device() << std::endl;
+	return true;
 }
 
 /**
  * visit (Partition)
  */
-void
+bool
 Visitor::visit (const Partition& p)
 {
-	std::cout << "Visited Partition: " << &p << std::endl;
+	indent (depth);
+	std::cout << "[Partition] : " << &p << " : " << p.get_id() << std::endl;
+	return true;
 }
 
 /**
  * visit (Filesystem)
  */
-void
+bool
 Visitor::visit (const Filesystem& f)
 {
-	std::cout << "Visited Filesystem: " << &f << std::endl;
+	indent (depth);
+	std::cout << "[Filesystem] : " << &f << " : " << f.get_label() << std::endl;
+	return true;
 }
 
 

@@ -32,11 +32,12 @@ Disk::Disk (void)
 /**
  * accept_visitor
  */
-void
+bool
 Disk::accept_visitor (Visitor& v)
 {
-	v.visit (*this);
-	visit_children (v);
+	if (!v.visit (*this))
+		return false;
+	return visit_children (v);
 }
 
 
@@ -44,7 +45,7 @@ Disk::accept_visitor (Visitor& v)
  * get_device
  */
 std::string
-Disk::get_device (void)
+Disk::get_device (void) const
 {
 	return device;
 }

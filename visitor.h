@@ -18,6 +18,9 @@
 #ifndef _VISITOR_H_
 #define _VISITOR_H_
 
+#include <string>
+#include <vector>
+
 class Container;
 class Disk;
 class Partition;
@@ -32,13 +35,17 @@ public:
 	Visitor (void);
 	virtual ~Visitor();
 
-	virtual void visit (const Container&  c);
-	virtual void visit (const Disk&       d);
-	virtual void visit (const Partition&  p);
-	virtual void visit (const Filesystem& f);
+	virtual bool visit_enter (const Container& c);
+	virtual bool visit_leave (void);
+
+	virtual bool visit (const Container&  c);
+	virtual bool visit (const Disk&       d);
+	virtual bool visit (const Partition&  p);
+	virtual bool visit (const Filesystem& f);
 
 protected:
-
+	std::vector<std::string> path;
+	int depth = 0;
 };
 
 

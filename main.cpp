@@ -82,6 +82,7 @@ int main (int, char *[])
 	//display_dot (c, 2, "initial");
 
 	return 0;
+
 }
 
 

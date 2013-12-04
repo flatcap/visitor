@@ -33,9 +33,9 @@ public:
 	Container (void);
 	virtual ~Container() = default;
 
-	virtual void accept_visitor (Visitor& v);
+	virtual bool accept_visitor (Visitor& v);
 
-	int get_size (void);
+	int get_size (void) const;
 	int set_size (int value);
 
 	int get_seqnum (void);
@@ -50,7 +50,7 @@ public:
 protected:
 	void changed (void);
 
-	void visit_children (Visitor& v);
+	bool visit_children (Visitor& v);
 
 private:
 	int seqnum = 1;

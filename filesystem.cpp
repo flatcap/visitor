@@ -32,11 +32,12 @@ Filesystem::Filesystem (void)
 /**
  * accept_visitor
  */
-void
+bool
 Filesystem::accept_visitor (Visitor& v)
 {
-	v.visit (*this);
-	visit_children (v);
+	if (!v.visit (*this))
+		return false;
+	return visit_children (v);
 }
 
 
@@ -44,7 +45,7 @@ Filesystem::accept_visitor (Visitor& v)
  * get_label
  */
 std::string
-Filesystem::get_label (void)
+Filesystem::get_label (void) const
 {
 	return label;
 }

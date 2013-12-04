@@ -32,11 +32,12 @@ Partition::Partition (void)
 /**
  * accept_visitor
  */
-void
+bool
 Partition::accept_visitor (Visitor& v)
 {
-	v.visit (*this);
-	visit_children (v);
+	if (!v.visit (*this))
+		return false;
+	return visit_children (v);
 }
 
 
@@ -44,7 +45,7 @@ Partition::accept_visitor (Visitor& v)
  * get_id
  */
 int
-Partition::get_id (void)
+Partition::get_id (void) const
 {
 	return id;
 }

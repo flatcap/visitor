@@ -38,7 +38,7 @@ DotVisitor::~DotVisitor()
  * visit (Container)
  */
 void
-DotVisitor::visit (const Container& c)
+DotVisitor::visit (const Container& parent, const Container& c)
 {
 	std::cout << "DotVisited Container: " << &c << std::endl;
 }
@@ -47,7 +47,7 @@ DotVisitor::visit (const Container& c)
  * visit (Disk)
  */
 void
-DotVisitor::visit (const Disk& d)
+DotVisitor::visit (const Container& parent, const Disk& d)
 {
 	std::cout << "DotVisited Disk: " << &d << std::endl;
 }
@@ -56,7 +56,7 @@ DotVisitor::visit (const Disk& d)
  * visit (Partition)
  */
 void
-DotVisitor::visit (const Partition& p)
+DotVisitor::visit (const Container& parent, const Partition& p)
 {
 	std::cout << "DotVisited Partition: " << &p << std::endl;
 }
@@ -65,7 +65,7 @@ DotVisitor::visit (const Partition& p)
  * visit (Filesystem)
  */
 void
-DotVisitor::visit (const Filesystem& f)
+DotVisitor::visit (const Container& parent, const Filesystem& f)
 {
 	std::cout << "DotVisited Filesystem: " << &f << std::endl;
 }

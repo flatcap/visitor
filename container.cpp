@@ -127,7 +127,7 @@ Container::get_children (void)
  * get_seqnum
  */
 int
-Container::get_seqnum (void)
+Container::get_seqnum (void) const
 {
 	return seqnum;
 }

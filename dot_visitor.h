@@ -18,7 +18,8 @@
 #ifndef _DOT_VISITOR_H_
 #define _DOT_VISITOR_H_
 
-#include <string>
+#include <sstream>
+#include <stack>
 
 #include "visitor.h"
 
@@ -31,15 +32,19 @@ public:
 	DotVisitor (void);
 	virtual ~DotVisitor();
 
-	virtual void visit (const Container& parent, const Container&  c);
-	virtual void visit (const Container& parent, const Disk&       d);
-	virtual void visit (const Container& parent, const Partition&  p);
-	virtual void visit (const Container& parent, const Filesystem& f);
+	virtual bool visit_enter (const Container& c);
+	virtual bool visit_leave (void);
 
-	const std::string& get_output (void);
+	virtual bool visit (const Container&  c);
+	virtual bool visit (const Disk&       d);
+	virtual bool visit (const Partition&  p);
+	virtual bool visit (const Filesystem& f);
+
+	std::string get_output (void);
 
 protected:
-	std::string output;
+	std::stack<const Container*> parents;
+	std::stringstream output;
 };
 
 

@@ -38,7 +38,7 @@ public:
 	int get_size (void) const;
 	int set_size (int value);
 
-	int get_seqnum (void);
+	int get_seqnum (void) const;
 
 	int add_child (CPtr child);
 	void remove_child (size_t index);

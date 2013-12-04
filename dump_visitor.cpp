@@ -18,7 +18,7 @@
 #include <iostream>
 #include <string>
 
-#include "visitor.h"
+#include "dump_visitor.h"
 
 #include "container.h"
 #include "disk.h"
@@ -26,16 +26,16 @@
 #include "filesystem.h"
 
 /**
- * Visitor
+ * DumpVisitor
  */
-Visitor::Visitor (void)
+DumpVisitor::DumpVisitor (void)
 {
 }
 
 /**
- * ~Visitor
+ * ~DumpVisitor
  */
-Visitor::~Visitor()
+DumpVisitor::~DumpVisitor()
 {
 }
 
@@ -55,12 +55,8 @@ indent (int depth)
  * visit_enter
  */
 bool
-Visitor::visit_enter (const Container& c)
+DumpVisitor::visit_enter (const Container& c)
 {
-#if 0
-	indent (depth);
-	std::cout << "Visit Enter: " << &c << std::endl;
-#endif
 	depth++;
 	return true;
 }
@@ -69,13 +65,9 @@ Visitor::visit_enter (const Container& c)
  * visit_leave
  */
 bool
-Visitor::visit_leave (void)
+DumpVisitor::visit_leave (void)
 {
 	depth--;
-#if 0
-	indent (depth);
-	std::cout << "Visit Leave" <<  std::endl;
-#endif
 	return true;
 }
 
@@ -84,7 +76,7 @@ Visitor::visit_leave (void)
  * visit (Container)
  */
 bool
-Visitor::visit (const Container& c)
+DumpVisitor::visit (const Container& c)
 {
 	indent (depth);
 	std::cout << "[Container]: " << &c << " : " << c.get_size() << std::endl;
@@ -95,7 +87,7 @@ Visitor::visit (const Container& c)
  * visit (Disk)
  */
 bool
-Visitor::visit (const Disk& d)
+DumpVisitor::visit (const Disk& d)
 {
 	indent (depth);
 	std::cout << "[Disk] : " << &d << " : " << d.get_device() << std::endl;
@@ -106,7 +98,7 @@ Visitor::visit (const Disk& d)
  * visit (Partition)
  */
 bool
-Visitor::visit (const Partition& p)
+DumpVisitor::visit (const Partition& p)
 {
 	indent (depth);
 	std::cout << "[Partition] : " << &p << " : " << p.get_id() << std::endl;
@@ -117,7 +109,7 @@ Visitor::visit (const Partition& p)
  * visit (Filesystem)
  */
 bool
-Visitor::visit (const Filesystem& f)
+DumpVisitor::visit (const Filesystem& f)
 {
 	indent (depth);
 	std::cout << "[Filesystem] : " << &f << " : " << f.get_label() << std::endl;

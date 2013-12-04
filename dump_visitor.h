@@ -15,29 +15,32 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _VISITOR_H_
-#define _VISITOR_H_
+#ifndef _DUMP_VISITOR_H_
+#define _DUMP_VISITOR_H_
 
-class Container;
-class Disk;
-class Partition;
-class Filesystem;
+#include "visitor.h"
 
 /**
- * class Visitor
+ * class DumpVisitor
  */
-class Visitor
+class DumpVisitor : public Visitor
 {
 public:
-	virtual bool visit_enter (const Container& c) = 0;
-	virtual bool visit_leave (void) = 0;
+	DumpVisitor (void);
+	virtual ~DumpVisitor();
 
-	virtual bool visit (const Container&  c) = 0;
-	virtual bool visit (const Disk&       d) = 0;
-	virtual bool visit (const Partition&  p) = 0;
-	virtual bool visit (const Filesystem& f) = 0;
+	virtual bool visit_enter (const Container& c);
+	virtual bool visit_leave (void);
+
+	virtual bool visit (const Container&  c);
+	virtual bool visit (const Disk&       d);
+	virtual bool visit (const Partition&  p);
+	virtual bool visit (const Filesystem& f);
+
+protected:
+	int depth = 0;
 };
 
 
-#endif // _VISITOR_H_
+#endif // _DUMP_VISITOR_H_
 

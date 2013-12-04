@@ -2,7 +2,8 @@ CC	= g++
 RM	= rm -fr
 MKDIR	= mkdir -p
 
-SRC	+= container.cpp disk.cpp dot.cpp dot_visitor.cpp filesystem.cpp main.cpp partition.cpp utils.cpp visitor.cpp
+SRC	+= container.cpp disk.cpp dot.cpp dot_visitor.cpp dump_visitor.cpp \
+	   filesystem.cpp main.cpp partition.cpp utils.cpp
 
 #HDR	= $(SRC:%.cpp=%.h)
 

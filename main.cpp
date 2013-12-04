@@ -31,8 +31,8 @@
 #include "disk.h"
 #include "partition.h"
 #include "filesystem.h"
-#include "dot.h"
-#include "visitor.h"
+
+#include "dump_visitor.h"
 #include "dot_visitor.h"
 
 /**
@@ -69,17 +69,12 @@ int main (int, char *[])
 	d->add_child (p2);
 	p2->add_child (f2);
 
-#if 0
-	Visitor v;
+	DumpVisitor v;
 	c->accept_visitor(v);
-#endif
 
 	DotVisitor dv;
 	c->accept_visitor (dv);
-
-	std::cout << dv.get_output();
-
-	//display_dot (c, 2, "initial");
+	dv.run_dotty ("objects");
 
 	return 0;
 

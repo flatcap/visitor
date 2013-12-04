@@ -20,7 +20,7 @@
 
 #include <string>
 
-unsigned int execute_command (const std::string& command, std::string& input);
+unsigned int execute_command (const std::string& command, const std::string& input);
 
 #endif // _UTILS_H_
 

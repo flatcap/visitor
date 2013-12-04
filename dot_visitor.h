@@ -20,6 +20,7 @@
 
 #include <sstream>
 #include <stack>
+#include <string>
 
 #include "visitor.h"
 
@@ -41,6 +42,7 @@ public:
 	virtual bool visit (const Filesystem& f);
 
 	std::string get_output (void);
+	void run_dotty (const std::string& title);
 
 protected:
 	std::stack<const Container*> parents;

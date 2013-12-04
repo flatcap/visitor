@@ -24,6 +24,8 @@
 #include "partition.h"
 #include "filesystem.h"
 
+#include "utils.h"
+
 /**
  * DotVisitor
  */
@@ -206,4 +208,15 @@ DotVisitor::get_output (void)
 	return output.str();
 }
 
+
+/**
+ * run_dotty
+ */
+void
+DotVisitor::run_dotty (const std::string& title)
+{
+	std::string command = "dot -Tpng | display -title \"" + title + "\" -resize 70% -& ";
+
+	execute_command (command, output.str());
+}
 

@@ -90,7 +90,7 @@ int main (int, char *[])
 	dv.run_dotty();
 #endif
 
-#if 1
+#if 0
 	struct {
 		bool operator() (CPtr& c)
 		{
@@ -104,15 +104,20 @@ int main (int, char *[])
 		std::cout << "[" << c->name << "]: " << c << " : " << c->get_size() << std::endl;
 	}
 	std::cout << std::endl;
+#endif
 
+#if 0
 	LambdaVisitor lv2 (choose);
 	c->accept (lv2);
 	for (auto c : lv2.get_results()) {
 		std::cout << "[" << c->name << "]: " << c << " : " << c->get_size() << std::endl;
 	}
 	std::cout << std::endl;
+#endif
 
-	LambdaVisitor lv3 ([] (CPtr& c) { return (c->name == "filesystem"); });
+#if 1
+	std::string search = "filesystem";
+	LambdaVisitor lv3 ([search] (CPtr& c) { return (c->name == search); });
 	c->accept (lv3);
 	for (auto c : lv3.get_results()) {
 		std::cout << "[" << c->name << "]: " << c << " : " << c->get_size() << std::endl;

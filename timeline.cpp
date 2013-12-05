@@ -20,7 +20,6 @@
 
 #include "timeline.h"
 #include "container.h"
-#include "dot.h"
 #include "utils.h"
 
 /**
@@ -108,6 +107,48 @@ Timeline::dump (void)
 	}
 	std::cout << std::endl;
 }
+
+
+/**
+ * dump_dot_small
+ */
+std::string
+dump_dot_small (const CPtr& c)
+{
+	// dump an instance
+	// for each child
+	//   dump child instance
+	// link this and children
+
+	std::stringstream dot;
+	std::string name;
+
+	name = c->name;
+	if (name.empty())
+		name = "c";
+
+	dot << "\n";
+	dot << "// " << c << "\n";
+
+	std::string colour;
+	     if (name == "disk")       colour = "#ffc0c0";	// red
+	else if (name == "partition")  colour = "#d0d080";	// yellow
+	else if (name == "filesystem") colour = "#80c080";	// green
+	else                           colour = "#c0c0c0";	// grey
+
+	dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\"><tr><td>\n";
+	dot << "<font point-size=\"16\"><b>" << (char)toupper(name[0]) << "</b></font> (" << c->get_seqnum() << ")</td></tr><tr><td>\n";
+	dot << "<font point-size=\"10\">" << c << "</font></td></tr></table>\n";
+	dot << ">];\n";
+
+	for (auto const& child : c->get_children()) {
+		dot << dump_dot_small (child);
+		dot << "obj_" << c << " -> obj_" << child << ";\n";
+	}
+
+	return dot.str();
+}
+
 
 /**
  * display

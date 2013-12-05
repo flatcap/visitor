@@ -21,24 +21,33 @@
 #include <vector>
 
 #include "pointers.h"
+#include "backup.h"
 
 class Visitor;
 
 /**
  * class Container
  */
-class Container
+class Container : public Backup
 {
 public:
+	Container (const Container& c);
+
+	Container&  operator= (const Container& c);
+
+	void * operator new (size_t size);
+	void operator delete (void *ptr);
+
 	static CPtr create (void);
 	virtual ~Container() = default;
+
+	virtual CPtr backup (void);
+	virtual void restore (void);
 
 	virtual bool accept (Visitor& v);
 
 	int get_size (void) const;
 	int set_size (int value);
-
-	int get_seqnum (void) const;
 
 	int add_child (CPtr child);
 	void remove_child (size_t index);
@@ -50,14 +59,11 @@ public:
 protected:
 	Container (void);
 
-	void changed (void);
-
 	bool visit_children (Visitor& v);
 
 	std::weak_ptr<Container> me;
 
 private:
-	int seqnum = 1;
 	int size = 0;
 	std::vector<CPtr> children;
 };

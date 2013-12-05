@@ -27,6 +27,7 @@
 
 #include "pointers.h"
 
+#include "timeline.h"
 #include "container.h"
 #include "disk.h"
 #include "partition.h"
@@ -73,6 +74,8 @@ int main (int, char *[])
 	f2->set_size   (240);
 	f2->set_label  ("hatstand");
 
+	Timeline tl;
+
 	c->add_child (d);
 	d->add_child (p1);
 	p1->add_child (f1);
@@ -80,17 +83,30 @@ int main (int, char *[])
 	p2->add_child (f2);
 
 #if 0
+	tl.backup (d, "initial");
+	//tl.dump();
+	//tl.display();
+
+	//display_dot (c, 2, "initial");
+	d->remove_child(1);
+	f1->set_label ("XXX");
+	//display_dot (c, 1, "deleted");
+	tl.restore();
+	//display_dot (c, 0, "restored");
+#endif
+
+#if 1
 	DumpVisitor v;
 	c->accept(v);
 #endif
 
-#if 0
+#if 1
 	DotVisitor dv;
 	c->accept (dv);
 	dv.run_dotty();
 #endif
 
-#if 0
+#if 1
 	struct {
 		bool operator() (CPtr& c)
 		{
@@ -106,7 +122,7 @@ int main (int, char *[])
 	std::cout << std::endl;
 #endif
 
-#if 0
+#if 1
 	LambdaVisitor lv2 (choose);
 	c->accept (lv2);
 	for (auto c : lv2.get_results()) {
@@ -126,7 +142,6 @@ int main (int, char *[])
 #endif
 
 	return 0;
-
 }
 
 

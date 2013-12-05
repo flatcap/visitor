@@ -26,8 +26,15 @@
 class Filesystem : public Container
 {
 public:
+	Filesystem (const Filesystem& f);
+
+	Filesystem&  operator= (const Filesystem& f);
+
 	static FPtr create (void);
 	virtual ~Filesystem() = default;
+
+	virtual CPtr backup (void);
+	virtual void restore (void);
 
 	bool accept (Visitor& v);
 

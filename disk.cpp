@@ -25,12 +25,36 @@
  */
 Disk::Disk (void)
 {
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	name = "disk";
+}
+
+/**
+ * Disk (copy)
+ */
+Disk::Disk (const Disk& d) :
+	Container (d),
+	device (d.device)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+/**
+ * operator=
+ */
+Disk&
+Disk::operator= (const Disk& d)
+{
+	Container::operator= (d);
+
+	device = d.device;
+
+	return *this;
 }
 
 
 /**
- * create
+ * create (static)
  */
 DPtr
 Disk::create (void)
@@ -44,6 +68,29 @@ Disk::create (void)
 	return dp;
 }
 
+
+/**
+ * backup
+ */
+CPtr
+Disk::backup (void)
+{
+	//Container::backup();
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+	CPtr old (new Disk (*this));
+	return old;
+}
+
+/**
+ * restore
+ */
+void
+Disk::restore (void)
+{
+	Container::restore();
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
 
 /**
  * accept

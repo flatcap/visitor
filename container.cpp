@@ -20,17 +20,28 @@
 #include "container.h"
 #include "visitor.h"
 
-static int base_seqnum = 1000;
-
 /**
  * Container (default)
  */
 Container::Container (void)
 {
-	seqnum = base_seqnum;
-	base_seqnum += 1000;
-
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	name = "container";
+}
+
+/**
+ * Container (copy)
+ */
+Container::Container (const Container& c) :
+	Backup (c),
+	name (c.name),
+	size (c.size)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+	for (auto child : c.children) {
+		children.push_back (child->backup());
+	}
 }
 
 /**
@@ -46,6 +57,55 @@ Container::create (void)
 	c->me = cp;
 
 	return cp;
+}
+
+
+/**
+ * operator=
+ */
+Container&
+Container::operator= (const Container& c)
+{
+	Backup::operator= (c);
+
+	name     = c.name;
+	size     = c.size;
+	children = c.children;
+
+	return *this;
+}
+
+
+/**
+ * new
+ */
+void *
+Container::operator new (size_t size)
+{
+	Container *c = (Container*) ::operator new (size);
+
+#if 0
+	std::cout << "new object " << c << std::endl;
+#endif
+
+	return c;
+}
+
+/**
+ * delete
+ */
+void
+Container::operator delete (void *ptr)
+{
+	if (!ptr)
+		return;
+
+#if 0
+	Container *c = (Container *) (ptr);
+	std::cout << "delete object " << c << std::endl;
+#endif
+
+	::operator delete (ptr);
 }
 
 /**
@@ -67,6 +127,34 @@ Container::visit_children (Visitor& v)
 		return false;
 
 	return true;
+}
+
+/**
+ * backup
+ */
+CPtr
+Container::backup (void)
+{
+	//Backup::backup();
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+	CPtr old (new Container (*this));
+	return old;
+}
+
+/**
+ * restore
+ */
+void
+Container::restore (void)
+{
+	Backup::restore();
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+	changed();
+	for (auto c : children) {
+		c->restore();
+	}
 }
 
 /**
@@ -137,27 +225,3 @@ Container::get_children (void)
 {
 	return children;
 }
-
-
-/**
- * get_seqnum
- */
-int
-Container::get_seqnum (void) const
-{
-	return seqnum;
-}
-
-
-/**
- * changed
- */
-void
-Container::changed (void)
-{
-	if (seqnum < 1)
-		return;
-
-	seqnum++;
-}
-

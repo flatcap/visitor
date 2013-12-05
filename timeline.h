@@ -15,39 +15,39 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _DISK_H_
-#define _DISK_H_
+#ifndef _TIMELINE_H_
+#define _TIMELINE_H_
 
-#include "container.h"
+#include <tuple>
+#include <deque>
+#include <string>
+
+#include "pointers.h"
+
+typedef std::tuple<CPtr, CPtr, std::string> Action;	// Current, Old, Description
 
 /**
- * class Disk
+ * class Timeline
  */
-class Disk : public Container
+class Timeline
 {
 public:
-	Disk (const Disk& d);
+	Timeline (void);
+	virtual ~Timeline();
 
-	Disk&  operator= (const Disk& d);
+	void push (const Action& action);
+	Action pop (void);
 
-	static DPtr create (void);
-	virtual ~Disk() = default;
+	CPtr backup (const CPtr& root, const std::string& desc);
+	void restore (void);
 
-	virtual CPtr backup (void);
-	virtual void restore (void);
-
-	bool accept (Visitor& v);
-
-	std::string get_device (void) const;
-	std::string set_device (std::string value);
+	void dump (void);
+	void display (void);
 
 protected:
-	Disk (void);
-
-private:
-	std::string device;
+	std::deque<Action> timeline;
 };
 
 
-#endif // _DISK_H_
+#endif // _TIMELINE_H_
 

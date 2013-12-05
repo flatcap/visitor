@@ -15,39 +15,35 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _DISK_H_
-#define _DISK_H_
+#ifndef _BACKUP_H_
+#define _BACKUP_H_
 
-#include "container.h"
+#include "pointers.h"
 
 /**
- * class Disk
+ * class Backup
  */
-class Disk : public Container
+class Backup
 {
 public:
-	Disk (const Disk& d);
+	Backup();
+	Backup (const Backup& b);
+	virtual ~Backup();
 
-	Disk&  operator= (const Disk& d);
-
-	static DPtr create (void);
-	virtual ~Disk() = default;
+	Backup&  operator= (const Backup& b);
 
 	virtual CPtr backup (void);
 	virtual void restore (void);
 
-	bool accept (Visitor& v);
-
-	std::string get_device (void) const;
-	std::string set_device (std::string value);
+	int get_seqnum (void);
 
 protected:
-	Disk (void);
+	void changed (void);
 
 private:
-	std::string device;
+	int seqnum = 1;
 };
 
 
-#endif // _DISK_H_
+#endif // _BACKUP_H_
 

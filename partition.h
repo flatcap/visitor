@@ -26,8 +26,15 @@
 class Partition : public Container
 {
 public:
+	Partition (const Partition& p);
+
+	Partition&  operator= (const Partition& p);
+
 	static PPtr create (void);
 	virtual ~Partition() = default;
+
+	virtual CPtr backup (void);
+	virtual void restore (void);
 
 	bool accept (Visitor& v);
 

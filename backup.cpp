@@ -17,113 +17,92 @@
 
 #include <iostream>
 
-#include "partition.h"
-#include "visitor.h"
+#include "backup.h"
+
+static int base_seqnum = 1000;
 
 /**
- * Partition (default)
+ * Backup (default)
  */
-Partition::Partition (void)
+Backup::Backup()
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	name = "partition";
+	seqnum = base_seqnum;
+	base_seqnum += 1000;
 }
 
 /**
- * Partition (copy)
+ * Backup (copy)
  */
-Partition::Partition (const Partition& p) :
-	Container (p),
-	id (p.id)
+Backup::Backup (const Backup& b) :
+	seqnum (b.seqnum)
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+/**
+ * ~Backup
+ */
+Backup::~Backup()
+{
 }
 
 
 /**
  * operator=
  */
-Partition&
-Partition::operator= (const Partition& p)
+Backup&
+Backup::operator= (const Backup& b)
 {
-	Container::operator= (p);
-
-	id = p.id;
+	// DON'T copy seqnum
+	// Nothing to do, for now
 
 	return *this;
 }
 
 
 /**
- * create (static)
- */
-PPtr
-Partition::create (void)
-{
-	Partition *p = new Partition();
-
-	PPtr pp (p);
-
-	p->me = pp;
-
-	return pp;
-}
-
-/**
  * backup
  */
 CPtr
-Partition::backup (void)
+Backup::backup (void)
 {
-	//Container::backup();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	seqnum = (seqnum+100)/100*100;
 
-	CPtr old (new Partition (*this));
-	return old;
+	return nullptr;
 }
 
 /**
  * restore
  */
 void
-Partition::restore (void)
+Backup::restore (void)
 {
-	Container::restore();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-/**
- * accept
- */
-bool
-Partition::accept (Visitor& v)
-{
-	PPtr p = std::dynamic_pointer_cast<Partition> (me.lock());
-	if (!v.visit (p))
-		return false;
-	return visit_children (v);
+	seqnum = (seqnum+100)/100*100;
 }
 
 
 /**
- * get_id
+ * get_seqnum
  */
 int
-Partition::get_id (void) const
+Backup::get_seqnum (void)
 {
-	return id;
+	return seqnum;
 }
+
 
 /**
- * set_id
+ * changed
  */
-int
-Partition::set_id (int value)
+void
+Backup::changed (void)
 {
-	int old = id;
-	id = value;
-	changed();
-	return old;
-}
+	if (seqnum < 1)
+		return;
 
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	seqnum++;
+}
 

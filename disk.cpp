@@ -30,12 +30,29 @@ Disk::Disk (void)
 
 
 /**
+ * create
+ */
+DPtr
+Disk::create (void)
+{
+	Disk *d = new Disk();
+
+	DPtr dp (d);
+
+	d->me = dp;
+
+	return dp;
+}
+
+
+/**
  * accept
  */
 bool
 Disk::accept (Visitor& v)
 {
-	if (!v.visit (*this))
+	DPtr d = std::dynamic_pointer_cast<Disk> (me.lock());
+	if (!v.visit (d))
 		return false;
 	return visit_children (v);
 }

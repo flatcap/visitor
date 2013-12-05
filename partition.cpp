@@ -30,12 +30,28 @@ Partition::Partition (void)
 
 
 /**
+ * create
+ */
+PPtr
+Partition::create (void)
+{
+	Partition *p = new Partition();
+
+	PPtr pp (p);
+
+	p->me = pp;
+
+	return pp;
+}
+
+/**
  * accept
  */
 bool
 Partition::accept (Visitor& v)
 {
-	if (!v.visit (*this))
+	PPtr p = std::dynamic_pointer_cast<Partition> (me.lock());
+	if (!v.visit (p))
 		return false;
 	return visit_children (v);
 }

@@ -30,12 +30,28 @@ Filesystem::Filesystem (void)
 
 
 /**
+ * create (void);
+ */
+FPtr
+Filesystem::create (void)
+{
+	Filesystem *f = new Filesystem();
+
+	FPtr fp (f);
+
+	f->me = fp;
+
+	return fp;
+}
+
+/**
  * accept
  */
 bool
 Filesystem::accept (Visitor& v)
 {
-	if (!v.visit (*this))
+	FPtr f = std::dynamic_pointer_cast<Filesystem> (me.lock());
+	if (!v.visit (f))
 		return false;
 	return visit_children (v);
 }

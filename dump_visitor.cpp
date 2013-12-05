@@ -55,7 +55,7 @@ indent (int depth)
  * visit_enter
  */
 bool
-DumpVisitor::visit_enter (const Container& c)
+DumpVisitor::visit_enter (CPtr& c)
 {
 	depth++;
 	return true;
@@ -76,10 +76,10 @@ DumpVisitor::visit_leave (void)
  * visit (Container)
  */
 bool
-DumpVisitor::visit (const Container& c)
+DumpVisitor::visit (CPtr& c)
 {
 	indent (depth);
-	std::cout << "[Container]: " << &c << " : " << c.get_size() << std::endl;
+	std::cout << "[Container]: " << c << " : " << c->get_size() << std::endl;
 	return true;
 }
 
@@ -87,10 +87,10 @@ DumpVisitor::visit (const Container& c)
  * visit (Disk)
  */
 bool
-DumpVisitor::visit (const Disk& d)
+DumpVisitor::visit (DPtr& d)
 {
 	indent (depth);
-	std::cout << "[Disk] : " << &d << " : " << d.get_device() << std::endl;
+	std::cout << "[Disk] : " << d << " : " << d->get_device() << std::endl;
 	return true;
 }
 
@@ -98,10 +98,10 @@ DumpVisitor::visit (const Disk& d)
  * visit (Partition)
  */
 bool
-DumpVisitor::visit (const Partition& p)
+DumpVisitor::visit (PPtr& p)
 {
 	indent (depth);
-	std::cout << "[Partition] : " << &p << " : " << p.get_id() << std::endl;
+	std::cout << "[Partition] : " << p << " : " << p->get_id() << std::endl;
 	return true;
 }
 
@@ -109,10 +109,10 @@ DumpVisitor::visit (const Partition& p)
  * visit (Filesystem)
  */
 bool
-DumpVisitor::visit (const Filesystem& f)
+DumpVisitor::visit (FPtr& f)
 {
 	indent (depth);
-	std::cout << "[Filesystem] : " << &f << " : " << f.get_label() << std::endl;
+	std::cout << "[Filesystem] : " << f << " : " << f->get_label() << std::endl;
 	return true;
 }
 

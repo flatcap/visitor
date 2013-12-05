@@ -22,7 +22,7 @@
 
 #include "visitor.h"
 
-typedef std::function<bool(const Container&)> Selector;
+typedef std::function<bool(CPtr&)> Selector;
 
 /**
  * class LambdaVisitor
@@ -33,7 +33,7 @@ public:
 	LambdaVisitor (Selector s);
 	virtual ~LambdaVisitor();
 
-	virtual bool visit (const Container&  c);
+	virtual bool visit (CPtr& c);
 
 protected:
 	Selector selector;

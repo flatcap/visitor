@@ -45,10 +45,10 @@ LambdaVisitor::~LambdaVisitor()
  * visit (Container)
  */
 bool
-LambdaVisitor::visit (const Container& c)
+LambdaVisitor::visit (CPtr& c)
 {
 	if (selector (c))
-		std::cout << "[" << c.name << "]: " << &c << " : " << c.get_size() << std::endl;
+		std::cout << "[" << c->name << "]: " << c << " : " << c->get_size() << std::endl;
 
 	return true;
 }

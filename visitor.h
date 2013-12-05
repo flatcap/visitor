@@ -18,10 +18,7 @@
 #ifndef _VISITOR_H_
 #define _VISITOR_H_
 
-class Container;
-class Disk;
-class Partition;
-class Filesystem;
+#include "pointers.h"
 
 /**
  * class Visitor
@@ -29,14 +26,14 @@ class Filesystem;
 class Visitor
 {
 public:
-	virtual bool visit_enter (const Container& c) { return true; }
-	virtual bool visit_leave (void)               { return true; }
+	virtual bool visit_enter (CPtr& c) { return true; }
+	virtual bool visit_leave (void)    { return true; }
 
-	virtual bool visit (const Container&  c) = 0;
+	virtual bool visit (CPtr& c) = 0;
 
-	virtual bool visit (const Disk&       d) { return visit ((const Container&) d); }
-	virtual bool visit (const Partition&  p) { return visit ((const Container&) p); }
-	virtual bool visit (const Filesystem& f) { return visit ((const Container&) f); }
+	virtual bool visit (DPtr& d) { return visit ((CPtr&) d); }
+	virtual bool visit (PPtr& p) { return visit ((CPtr&) p); }
+	virtual bool visit (FPtr& f) { return visit ((CPtr&) f); }
 };
 
 

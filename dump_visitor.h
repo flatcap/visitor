@@ -29,13 +29,13 @@ public:
 	DumpVisitor (void);
 	virtual ~DumpVisitor();
 
-	virtual bool visit_enter (const Container& c);
+	virtual bool visit_enter (CPtr& c);
 	virtual bool visit_leave (void);
 
-	virtual bool visit (const Container&  c);
-	virtual bool visit (const Disk&       d);
-	virtual bool visit (const Partition&  p);
-	virtual bool visit (const Filesystem& f);
+	virtual bool visit (CPtr& c);
+	virtual bool visit (DPtr& d);
+	virtual bool visit (PPtr& p);
+	virtual bool visit (FPtr& f);
 
 protected:
 	int depth = 0;

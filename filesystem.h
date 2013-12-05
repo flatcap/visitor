@@ -26,13 +26,16 @@
 class Filesystem : public Container
 {
 public:
-	Filesystem (void);
+	static FPtr create (void);
 	virtual ~Filesystem() = default;
 
 	bool accept (Visitor& v);
 
 	std::string get_label (void) const;
 	std::string set_label (const std::string& value);
+
+protected:
+	Filesystem (void);
 
 private:
 	std::string label;

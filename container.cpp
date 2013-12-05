@@ -33,6 +33,20 @@ Container::Container (void)
 	name = "container";
 }
 
+/**
+ * create
+ */
+CPtr
+Container::create (void)
+{
+	Container *c = new Container();
+
+	CPtr cp (c);
+
+	c->me = cp;
+
+	return cp;
+}
 
 /**
  * visit_children
@@ -40,7 +54,8 @@ Container::Container (void)
 bool
 Container::visit_children (Visitor& v)
 {
-	if (!v.visit_enter (*this))
+	CPtr c = me.lock();
+	if (!v.visit_enter (c))
 		return false;
 
 	for (auto c : children) {
@@ -60,7 +75,8 @@ Container::visit_children (Visitor& v)
 bool
 Container::accept (Visitor& v)
 {
-	if (!v.visit (*this))
+	CPtr c = me.lock();
+	if (!v.visit (c))
 		return false;
 	return visit_children (v);
 }

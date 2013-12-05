@@ -40,9 +40,9 @@
  * select
  */
 bool
-choose (const Container& c)
+choose (CPtr& c)
 {
-	return (c.name == "filesystem");
+	return (c->name == "partition");
 }
 
 /**
@@ -50,13 +50,13 @@ choose (const Container& c)
  */
 int main (int, char *[])
 {
-	CPtr c  = std::make_shared<Container>();
+	CPtr c  = Container::create();
 
-	DPtr d  = std::make_shared<Disk>();
-	PPtr p1 = std::make_shared<Partition>();
-	PPtr p2 = std::make_shared<Partition>();
-	FPtr f1 = std::make_shared<Filesystem>();
-	FPtr f2 = std::make_shared<Filesystem>();
+	DPtr d  = Disk::create();
+	PPtr p1 = Partition::create();
+	PPtr p2 = Partition::create();
+	FPtr f1 = Filesystem::create();
+	FPtr f2 = Filesystem::create();
 
 	d->set_size   (1234);
 	d->set_device ("/dev/loop0");
@@ -84,16 +84,17 @@ int main (int, char *[])
 	c->accept(v);
 #endif
 
-#if 0
+#if 1
 	DotVisitor dv;
 	c->accept (dv);
-	dv.run_dotty ("objects");
+	dv.run_dotty();
 #endif
 
+#if 0
 	struct {
-		bool operator() (const Container& c)
+		bool operator() (CPtr& c)
 		{
-			return c.name == "filesystem";
+			return c->name == "disk";
 		}
 	} functor;
 
@@ -105,9 +106,10 @@ int main (int, char *[])
 	c->accept (lv2);
 	std::cout << std::endl;
 
-	LambdaVisitor lv3 ([] (const Container& c) { return (c.name == "filesystem"); });
-	c->accept (lv2);
+	LambdaVisitor lv3 ([] (CPtr& c) { return (c->name == "filesystem"); });
+	c->accept (lv3);
 	std::cout << std::endl;
+#endif
 
 	return 0;
 

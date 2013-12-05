@@ -26,13 +26,16 @@
 class Partition : public Container
 {
 public:
-	Partition (void);
+	static PPtr create (void);
 	virtual ~Partition() = default;
 
 	bool accept (Visitor& v);
 
 	int get_id (void) const;
 	int set_id (int value);
+
+protected:
+	Partition (void);
 
 private:
 	int id = 0;

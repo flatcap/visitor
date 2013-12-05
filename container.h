@@ -30,7 +30,7 @@ class Visitor;
 class Container
 {
 public:
-	Container (void);
+	static CPtr create (void);
 	virtual ~Container() = default;
 
 	virtual bool accept (Visitor& v);
@@ -48,9 +48,13 @@ public:
 	std::string name;
 
 protected:
+	Container (void);
+
 	void changed (void);
 
 	bool visit_children (Visitor& v);
+
+	std::weak_ptr<Container> me;
 
 private:
 	int seqnum = 1;

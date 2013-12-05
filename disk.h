@@ -26,13 +26,16 @@
 class Disk : public Container
 {
 public:
-	Disk (void);
+	static DPtr create (void);
 	virtual ~Disk() = default;
 
 	bool accept (Visitor& v);
 
 	std::string get_device (void) const;
 	std::string set_device (std::string value);
+
+protected:
+	Disk (void);
 
 private:
 	std::string device;

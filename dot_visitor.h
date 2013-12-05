@@ -33,19 +33,19 @@ public:
 	DotVisitor (void);
 	virtual ~DotVisitor();
 
-	virtual bool visit_enter (const Container& c);
+	virtual bool visit_enter (CPtr& c);
 	virtual bool visit_leave (void);
 
-	virtual bool visit (const Container&  c);
-	virtual bool visit (const Disk&       d);
-	virtual bool visit (const Partition&  p);
-	virtual bool visit (const Filesystem& f);
+	virtual bool visit (CPtr& c);
+	virtual bool visit (DPtr& d);
+	virtual bool visit (PPtr& p);
+	virtual bool visit (FPtr& f);
 
 	std::string get_output (void);
-	void run_dotty (const std::string& title);
+	void run_dotty (void);
 
 protected:
-	std::stack<const Container*> parents;
+	std::stack<std::string> parents;
 	std::stringstream output;
 };
 

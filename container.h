@@ -35,8 +35,8 @@ public:
 
 	Container&  operator= (const Container& c);
 
-	void * operator new (size_t size);
-	void operator delete (void *ptr);
+	void* operator new (size_t size);
+	void operator delete (void* ptr);
 
 	static CPtr create (void);
 	virtual ~Container() = default;

@@ -59,7 +59,7 @@ Filesystem::operator= (const Filesystem& f)
 FPtr
 Filesystem::create (void)
 {
-	Filesystem *f = new Filesystem();
+	Filesystem* f = new Filesystem();
 
 	FPtr fp (f);
 

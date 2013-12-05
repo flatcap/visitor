@@ -59,7 +59,7 @@ Disk::operator= (const Disk& d)
 DPtr
 Disk::create (void)
 {
-	Disk *d = new Disk();
+	Disk* d = new Disk();
 
 	DPtr dp (d);
 

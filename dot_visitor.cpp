@@ -50,7 +50,7 @@ DotVisitor::~DotVisitor()
  * dot_row (int)
  */
 static std::string
-dot_row (const char *name, int value)
+dot_row (const char* name, int value)
 {
 	std::stringstream output;
 
@@ -67,7 +67,7 @@ dot_row (const char *name, int value)
  * dot_row (std::string)
  */
 static std::string
-dot_row (const char *name, const std::string &value)
+dot_row (const char* name, const std::string& value)
 {
 	std::stringstream output;
 
@@ -217,7 +217,7 @@ DotVisitor::get_output (void)
 void
 DotVisitor::run_dotty (void)
 {
-	std::string command = "dot -Tpng | display -resize 70% -& ";
+	std::string command = "dot -Tpng | display -resize 70% - &";
 
 	execute_command (command, output.str());
 }

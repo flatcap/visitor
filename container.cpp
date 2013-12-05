@@ -50,7 +50,7 @@ Container::Container (const Container& c) :
 CPtr
 Container::create (void)
 {
-	Container *c = new Container();
+	Container* c = new Container();
 
 	CPtr cp (c);
 
@@ -79,10 +79,10 @@ Container::operator= (const Container& c)
 /**
  * new
  */
-void *
+void*
 Container::operator new (size_t size)
 {
-	Container *c = (Container*) ::operator new (size);
+	Container* c = (Container*) ::operator new (size);
 
 #if 0
 	std::cout << "new object " << c << std::endl;
@@ -95,13 +95,13 @@ Container::operator new (size_t size)
  * delete
  */
 void
-Container::operator delete (void *ptr)
+Container::operator delete (void* ptr)
 {
 	if (!ptr)
 		return;
 
 #if 0
-	Container *c = (Container *) (ptr);
+	Container* c = (Container*) (ptr);
 	std::cout << "delete object " << c << std::endl;
 #endif
 

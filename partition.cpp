@@ -60,7 +60,7 @@ Partition::operator= (const Partition& p)
 PPtr
 Partition::create (void)
 {
-	Partition *p = new Partition();
+	Partition* p = new Partition();
 
 	PPtr pp (p);
 

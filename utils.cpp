@@ -24,7 +24,7 @@
 unsigned int
 execute_command (const std::string& command, const std::string& input)
 {
-	FILE *file = nullptr;
+	FILE* file = nullptr;
 	int count = 0;
 
 	file = popen (command.c_str(), "we");

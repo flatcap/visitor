@@ -19,6 +19,7 @@
 #define _LAMBDA_VISITOR_H_
 
 #include <functional>
+#include <vector>
 
 #include "visitor.h"
 
@@ -35,8 +36,11 @@ public:
 
 	virtual bool visit (CPtr& c);
 
+	std::vector<CPtr> get_results (void);
+
 protected:
 	Selector selector;
+	std::vector<CPtr> results;
 };
 
 

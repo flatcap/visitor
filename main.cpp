@@ -84,13 +84,13 @@ int main (int, char *[])
 	c->accept(v);
 #endif
 
-#if 1
+#if 0
 	DotVisitor dv;
 	c->accept (dv);
 	dv.run_dotty();
 #endif
 
-#if 0
+#if 1
 	struct {
 		bool operator() (CPtr& c)
 		{
@@ -100,14 +100,23 @@ int main (int, char *[])
 
 	LambdaVisitor lv1 (functor);
 	c->accept (lv1);
+	for (auto c : lv1.get_results()) {
+		std::cout << "[" << c->name << "]: " << c << " : " << c->get_size() << std::endl;
+	}
 	std::cout << std::endl;
 
 	LambdaVisitor lv2 (choose);
 	c->accept (lv2);
+	for (auto c : lv2.get_results()) {
+		std::cout << "[" << c->name << "]: " << c << " : " << c->get_size() << std::endl;
+	}
 	std::cout << std::endl;
 
 	LambdaVisitor lv3 ([] (CPtr& c) { return (c->name == "filesystem"); });
 	c->accept (lv3);
+	for (auto c : lv3.get_results()) {
+		std::cout << "[" << c->name << "]: " << c << " : " << c->get_size() << std::endl;
+	}
 	std::cout << std::endl;
 #endif
 

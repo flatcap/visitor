@@ -48,8 +48,17 @@ bool
 LambdaVisitor::visit (CPtr& c)
 {
 	if (selector (c))
-		std::cout << "[" << c->name << "]: " << c << " : " << c->get_size() << std::endl;
-
+		results.push_back (c);
 	return true;
 }
+
+/**
+ * get_results
+ */
+std::vector<CPtr>
+LambdaVisitor::get_results (void)
+{
+	return results;
+}
+
 

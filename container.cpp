@@ -71,42 +71,11 @@ Container::operator= (const Container& c)
 	name     = c.name;
 	size     = c.size;
 	children = c.children;
+	//don't copy 'me'
 
 	return *this;
 }
 
-
-/**
- * new
- */
-void*
-Container::operator new (size_t size)
-{
-	Container* c = (Container*) ::operator new (size);
-
-#if 0
-	std::cout << "new object " << c << std::endl;
-#endif
-
-	return c;
-}
-
-/**
- * delete
- */
-void
-Container::operator delete (void* ptr)
-{
-	if (!ptr)
-		return;
-
-#if 0
-	Container* c = (Container*) (ptr);
-	std::cout << "delete object " << c << std::endl;
-#endif
-
-	::operator delete (ptr);
-}
 
 /**
  * visit_children

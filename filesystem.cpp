@@ -21,22 +21,13 @@
 #include "visitor.h"
 
 /**
- * Filesystem (default)
- */
-Filesystem::Filesystem (void)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	name = "filesystem";
-}
-
-/**
  * Filesystem (copy)
  */
 Filesystem::Filesystem (const Filesystem& f) :
 	Container (f),
 	label (f.label)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << __PRETTY_FUNCTION__ << " : " << f.label << std::endl;
 }
 
 /**
@@ -45,6 +36,7 @@ Filesystem::Filesystem (const Filesystem& f) :
 Filesystem&
 Filesystem::operator= (const Filesystem& f)
 {
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	Container::operator= (f);
 
 	label = f.label;
@@ -60,6 +52,8 @@ FPtr
 Filesystem::create (void)
 {
 	Filesystem* f = new Filesystem();
+
+	f->name = "filesystem";
 
 	FPtr fp (f);
 
@@ -82,6 +76,17 @@ Filesystem::backup (void)
 }
 
 /**
+ * clone
+ */
+Filesystem*
+Filesystem::clone (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	return new Filesystem (*this);
+}
+
+
+/**
  * restore
  */
 void
@@ -90,6 +95,7 @@ Filesystem::restore (void)
 	Container::restore();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
+
 
 /**
  * accept

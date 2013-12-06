@@ -31,12 +31,10 @@ class Visitor;
 class Container : public Backup
 {
 public:
-	Container (const Container& c);
-
-	Container&  operator= (const Container& c);
-
 	static CPtr create (void);
 	virtual ~Container() = default;
+
+	CPtr copy (void);
 
 	virtual CPtr backup (void);
 	virtual void restore (void);
@@ -54,7 +52,11 @@ public:
 	std::string name;
 
 protected:
-	Container (void);
+	Container (void) = default;
+	Container (const Container& c);
+	Container&  operator= (const Container& c);
+
+	virtual Container* clone (void);
 
 	bool visit_children (Visitor& v);
 

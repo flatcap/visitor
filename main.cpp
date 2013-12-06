@@ -74,39 +74,47 @@ int main (int, char *[])
 	f2->set_size   (240);
 	f2->set_label  ("hatstand");
 
-	Timeline tl;
-
 	c->add_child (d);
 	d->add_child (p1);
 	p1->add_child (f1);
 	d->add_child (p2);
 	p2->add_child (f2);
 
-#if 0
+	CPtr d_work = d->copy();
+
+#if 0 // Timeline
+	Timeline tl;
+
 	tl.backup (d, "initial");
 	//tl.dump();
 	//tl.display();
 
 	//display_dot (c, 2, "initial");
-	d->remove_child(1);
+	//d->remove_child(1);
 	f1->set_label ("XXX");
 	//display_dot (c, 1, "deleted");
-	tl.restore();
+	//tl.restore();
 	//display_dot (c, 0, "restored");
 #endif
 
-#if 1
-	DumpVisitor v;
-	c->accept(v);
+#if 0 // DumpVisitor (c)
+	DumpVisitor v1;
+	c->accept(v1);
+	std::cout << std::endl;
 #endif
 
-#if 1
+#if 1 // DumpVisitor (d_work)
+	DumpVisitor v2;
+	d_work->accept(v2);
+#endif
+
+#if 0 // DotVisitor
 	DotVisitor dv;
-	c->accept (dv);
+	d_work->accept (dv);
 	dv.run_dotty();
 #endif
 
-#if 1
+#if 0 // LambdaVisitor (functor)
 	struct {
 		bool operator() (CPtr& c)
 		{
@@ -122,7 +130,7 @@ int main (int, char *[])
 	std::cout << std::endl;
 #endif
 
-#if 1
+#if 0 // LambdaVisitor (function)
 	LambdaVisitor lv2 (choose);
 	c->accept (lv2);
 	for (auto c : lv2.get_results()) {
@@ -131,7 +139,7 @@ int main (int, char *[])
 	std::cout << std::endl;
 #endif
 
-#if 1
+#if 0 // LambdaVisitor (lamda)
 	std::string search = "filesystem";
 	LambdaVisitor lv3 ([search] (CPtr& c) { return (c->name == search); });
 	c->accept (lv3);
@@ -141,7 +149,7 @@ int main (int, char *[])
 	std::cout << std::endl;
 #endif
 
-#if 0
+#if 0 // Shared/Weak pointer
 	std::weak_ptr<Disk> wp;
 	std::shared_ptr<Disk> sp;
 
@@ -170,6 +178,7 @@ int main (int, char *[])
 	std::cout << wp.use_count() << std::endl;
 	std::cout << sp.use_count() << std::endl << std::endl;
 #endif
+
 
 	return 0;
 }

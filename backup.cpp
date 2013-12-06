@@ -39,13 +39,6 @@ Backup::Backup (const Backup& b) :
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-/**
- * ~Backup
- */
-Backup::~Backup()
-{
-}
-
 
 /**
  * operator=

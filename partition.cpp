@@ -21,24 +21,14 @@
 #include "visitor.h"
 
 /**
- * Partition (default)
- */
-Partition::Partition (void)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	name = "partition";
-}
-
-/**
  * Partition (copy)
  */
 Partition::Partition (const Partition& p) :
 	Container (p),
 	id (p.id)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << __PRETTY_FUNCTION__ << " : " << p.id << std::endl;
 }
-
 
 /**
  * operator=
@@ -46,6 +36,7 @@ Partition::Partition (const Partition& p) :
 Partition&
 Partition::operator= (const Partition& p)
 {
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	Container::operator= (p);
 
 	id = p.id;
@@ -62,12 +53,15 @@ Partition::create (void)
 {
 	Partition* p = new Partition();
 
+	p->name = "partition";
+
 	PPtr pp (p);
 
 	p->me = pp;
 
 	return pp;
 }
+
 
 /**
  * backup
@@ -91,6 +85,18 @@ Partition::restore (void)
 	Container::restore();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
+
+
+/**
+ * clone
+ */
+Partition*
+Partition::clone (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	return new Partition (*this);
+}
+
 
 /**
  * accept

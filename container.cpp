@@ -21,44 +21,20 @@
 #include "visitor.h"
 
 /**
- * Container (default)
- */
-Container::Container (void)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	name = "container";
-}
-
-/**
  * Container (copy)
  */
 Container::Container (const Container& c) :
 	Backup (c),
 	name (c.name),
 	size (c.size)
+	//don't copy 'me'
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << __PRETTY_FUNCTION__ << " : " << c.name << std::endl;
 
 	for (auto child : c.children) {
-		children.push_back (child->backup());
+		children.push_back (child->copy());
 	}
 }
-
-/**
- * create
- */
-CPtr
-Container::create (void)
-{
-	Container* c = new Container();
-
-	CPtr cp (c);
-
-	c->me = cp;
-
-	return cp;
-}
-
 
 /**
  * operator=
@@ -66,6 +42,7 @@ Container::create (void)
 Container&
 Container::operator= (const Container& c)
 {
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	Backup::operator= (c);
 
 	name     = c.name;
@@ -74,6 +51,24 @@ Container::operator= (const Container& c)
 	//don't copy 'me'
 
 	return *this;
+}
+
+
+/**
+ * create (static)
+ */
+CPtr
+Container::create (void)
+{
+	Container* c = new Container();
+
+	c->name = "container";
+
+	CPtr cp (c);
+
+	c->me = cp;	// keep a weak pointer to myself
+
+	return cp;
 }
 
 
@@ -117,9 +112,13 @@ Container::accept (Visitor& v)
 CPtr
 Container::backup (void)
 {
-	//Backup::backup();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+#if 0
+	CPtr copy (create());
 
+	*copy = this;
+
+	return copy;
+#endif
 	CPtr old (new Container (*this));
 	return old;
 }
@@ -141,6 +140,33 @@ Container::restore (void)
 
 
 /**
+ * clone
+ */
+Container*
+Container::clone (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	return new Container (*this);
+}
+
+/**
+ * copy
+ */
+CPtr
+Container::copy (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	Container *c = clone();
+
+	CPtr cp (c);
+
+	c->me = cp;	// keep a weak pointer to myself
+
+	return cp;
+}
+
+
+/**
  * get_size
  */
 int
@@ -148,6 +174,7 @@ Container::get_size (void) const
 {
 	return size;
 }
+
 
 /**
  * set_size

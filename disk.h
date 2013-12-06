@@ -26,10 +26,6 @@
 class Disk : public Container
 {
 public:
-	Disk (const Disk& d);
-
-	Disk&  operator= (const Disk& d);
-
 	static DPtr create (void);
 	virtual ~Disk() = default;
 
@@ -42,7 +38,11 @@ public:
 	std::string set_device (std::string value);
 
 protected:
-	Disk (void);
+	Disk (void) = default;
+	Disk (const Disk& d);
+	Disk&  operator= (const Disk& d);
+
+	virtual Disk* clone (void);
 
 private:
 	std::string device;

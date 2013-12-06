@@ -26,9 +26,8 @@
 class Backup
 {
 public:
-	Backup();
 	Backup (const Backup& b);
-	virtual ~Backup();
+	virtual ~Backup() = default;
 
 	Backup&  operator= (const Backup& b);
 
@@ -38,6 +37,8 @@ public:
 	int get_seqnum (void);
 
 protected:
+	Backup();
+
 	void changed (void);
 
 private:

@@ -21,22 +21,13 @@
 #include "visitor.h"
 
 /**
- * Disk (default)
- */
-Disk::Disk (void)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	name = "disk";
-}
-
-/**
  * Disk (copy)
  */
 Disk::Disk (const Disk& d) :
 	Container (d),
 	device (d.device)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << __PRETTY_FUNCTION__ << " : " << d.device << std::endl;
 }
 
 /**
@@ -45,6 +36,7 @@ Disk::Disk (const Disk& d) :
 Disk&
 Disk::operator= (const Disk& d)
 {
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	Container::operator= (d);
 
 	device = d.device;
@@ -60,6 +52,8 @@ DPtr
 Disk::create (void)
 {
 	Disk* d = new Disk();
+
+	d->name = "disk";
 
 	DPtr dp (d);
 
@@ -91,6 +85,18 @@ Disk::restore (void)
 	Container::restore();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
+
+
+/**
+ * clone
+ */
+Disk*
+Disk::clone (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	return new Disk (*this);
+}
+
 
 /**
  * accept

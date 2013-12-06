@@ -26,10 +26,6 @@
 class Filesystem : public Container
 {
 public:
-	Filesystem (const Filesystem& f);
-
-	Filesystem&  operator= (const Filesystem& f);
-
 	static FPtr create (void);
 	virtual ~Filesystem() = default;
 
@@ -42,7 +38,11 @@ public:
 	std::string set_label (const std::string& value);
 
 protected:
-	Filesystem (void);
+	Filesystem (void) = default;
+	Filesystem (const Filesystem& f);
+	Filesystem&  operator= (const Filesystem& f);
+
+	virtual Filesystem* clone (void);
 
 private:
 	std::string label;

@@ -26,10 +26,6 @@
 class Partition : public Container
 {
 public:
-	Partition (const Partition& p);
-
-	Partition&  operator= (const Partition& p);
-
 	static PPtr create (void);
 	virtual ~Partition() = default;
 
@@ -42,7 +38,11 @@ public:
 	int set_id (int value);
 
 protected:
-	Partition (void);
+	Partition (void) = default;
+	Partition (const Partition& p);
+	Partition&  operator= (const Partition& p);
+
+	virtual Partition* clone (void);
 
 private:
 	int id = 0;

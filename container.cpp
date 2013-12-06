@@ -99,6 +99,19 @@ Container::visit_children (Visitor& v)
 }
 
 /**
+ * accept
+ */
+bool
+Container::accept (Visitor& v)
+{
+	CPtr c = me.lock();
+	if (!v.visit (c))
+		return false;
+	return visit_children (v);
+}
+
+
+/**
  * backup
  */
 CPtr
@@ -124,18 +137,6 @@ Container::restore (void)
 	for (auto c : children) {
 		c->restore();
 	}
-}
-
-/**
- * accept
- */
-bool
-Container::accept (Visitor& v)
-{
-	CPtr c = me.lock();
-	if (!v.visit (c))
-		return false;
-	return visit_children (v);
 }
 
 

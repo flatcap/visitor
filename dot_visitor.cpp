@@ -215,9 +215,9 @@ DotVisitor::get_output (void)
  * run_dotty
  */
 void
-DotVisitor::run_dotty (void)
+DotVisitor::run_dotty (const std::string& title)
 {
-	std::string command = "dot -Tpng | display -resize 70% - &";
+	std::string command = "dot -Tpng | display -title \"" + title + "\" -resize 70% - &";
 
 	execute_command (command, output.str());
 }

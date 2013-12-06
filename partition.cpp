@@ -63,6 +63,7 @@ Partition::create (void)
 }
 
 
+#if 0
 /**
  * backup
  */
@@ -86,6 +87,7 @@ Partition::restore (void)
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
+#endif
 
 /**
  * clone

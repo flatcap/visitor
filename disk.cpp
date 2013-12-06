@@ -63,6 +63,7 @@ Disk::create (void)
 }
 
 
+#if 0
 /**
  * backup
  */
@@ -86,6 +87,7 @@ Disk::restore (void)
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
+#endif
 
 /**
  * clone

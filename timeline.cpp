@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 #include "timeline.h"
 #include "container.h"
@@ -58,6 +59,7 @@ Timeline::pop (void)
 }
 
 
+#if 0
 /**
  * backup
  */
@@ -86,6 +88,18 @@ Timeline::restore (void)
 	//XXX *current = *old;	// copy the objects, not the smart pointers
 
 	current->restore();
+}
+
+#endif
+
+/**
+ * backup
+ */
+void
+Timeline::backup (CPtr& orig, CPtr& work, const std::string& desc)
+{
+	std::swap(orig, work);
+	push (Action(orig, work, desc));
 }
 
 

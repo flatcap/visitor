@@ -42,7 +42,7 @@ public:
 	virtual bool visit (FPtr& f);
 
 	std::string get_output (void);
-	void run_dotty (void);
+	void run_dotty (const std::string& title);
 
 protected:
 	std::stack<std::string> parents;

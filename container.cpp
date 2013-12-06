@@ -106,6 +106,7 @@ Container::accept (Visitor& v)
 }
 
 
+#if 0
 /**
  * backup
  */
@@ -138,6 +139,7 @@ Container::restore (void)
 	}
 }
 
+#endif
 
 /**
  * clone

@@ -29,8 +29,10 @@ public:
 	static FPtr create (void);
 	virtual ~Filesystem() = default;
 
+#if 0
 	virtual CPtr backup (void);
 	virtual void restore (void);
+#endif
 
 	bool accept (Visitor& v);
 

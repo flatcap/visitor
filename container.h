@@ -36,8 +36,10 @@ public:
 
 	CPtr copy (void);
 
+#if 0
 	virtual CPtr backup (void);
 	virtual void restore (void);
+#endif
 
 	virtual bool accept (Visitor& v);
 

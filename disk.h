@@ -29,8 +29,10 @@ public:
 	static DPtr create (void);
 	virtual ~Disk() = default;
 
+#if 0
 	virtual CPtr backup (void);
 	virtual void restore (void);
+#endif
 
 	bool accept (Visitor& v);
 

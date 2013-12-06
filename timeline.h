@@ -38,8 +38,11 @@ public:
 	void push (const Action& action);
 	Action pop (void);
 
+#if 0
 	CPtr backup (const CPtr& root, const std::string& desc);
 	void restore (void);
+#endif
+	void backup (CPtr& orig, CPtr& work, const std::string& desc);
 
 	void dump (void);
 	void display (void);

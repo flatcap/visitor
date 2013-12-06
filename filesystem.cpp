@@ -62,6 +62,8 @@ Filesystem::create (void)
 	return fp;
 }
 
+
+#if 0
 /**
  * backup
  */
@@ -76,17 +78,6 @@ Filesystem::backup (void)
 }
 
 /**
- * clone
- */
-Filesystem*
-Filesystem::clone (void)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	return new Filesystem (*this);
-}
-
-
-/**
  * restore
  */
 void
@@ -94,6 +85,18 @@ Filesystem::restore (void)
 {
 	Container::restore();
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+#endif
+
+/**
+ * clone
+ */
+Filesystem*
+Filesystem::clone (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	return new Filesystem (*this);
 }
 
 

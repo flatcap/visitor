@@ -141,6 +141,36 @@ int main (int, char *[])
 	std::cout << std::endl;
 #endif
 
+#if 0
+	std::weak_ptr<Disk> wp;
+	std::shared_ptr<Disk> sp;
+
+	wp = d;
+
+	std::cout << d.use_count()  << std::endl;
+	std::cout << wp.use_count() << std::endl;
+	std::cout << sp.use_count() << std::endl << std::endl;
+
+	sp = wp.lock();
+	wp.reset();
+
+	std::cout << d.use_count()  << std::endl;
+	std::cout << wp.use_count() << std::endl;
+	std::cout << sp.use_count() << std::endl << std::endl;
+
+	sp = nullptr;
+
+	std::cout << d.use_count()  << std::endl;
+	std::cout << wp.use_count() << std::endl;
+	std::cout << sp.use_count() << std::endl << std::endl;
+
+	sp = wp.lock();
+
+	std::cout << d.use_count()  << std::endl;
+	std::cout << wp.use_count() << std::endl;
+	std::cout << sp.use_count() << std::endl << std::endl;
+#endif
+
 	return 0;
 }
 

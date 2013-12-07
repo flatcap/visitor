@@ -218,7 +218,7 @@ void
 DotVisitor::run_dotty (void)
 {
 	static int x = 0;
-	std::string command = "dot -Tpng | display -geometry +" + std::to_string(x*180) + "+0 -title \"" + std::to_string(x+1) + "\" -resize 70% - &";
+	std::string command = "dot -Tpng | display -geometry +" + std::to_string(x*180+500) + "+0 -title \"" + std::to_string(x+1) + "\" -resize 70% - &";
 
 	execute_command (command, output.str());
 	x++;

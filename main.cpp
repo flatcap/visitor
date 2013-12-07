@@ -152,6 +152,117 @@ lambda_lambda (CPtr& c)
 	std::cout << std::endl;
 }
 
+/**
+ * swap
+ */
+template<class L,class R>
+void
+swap (L& l, R& r)
+{
+	{
+		std::string ltype = typeid(l).name();
+		std::string rtype = typeid(r).name();
+
+		CPtr lc = std::dynamic_pointer_cast<Container>(l);
+		CPtr rc = std::dynamic_pointer_cast<Container>(r);
+
+		std::cout << "swapping: " << lc << "(" << ltype << "), " << rc << "(" << rtype + ")" << std::endl;
+
+		std::swap (lc, rc);
+	}
+	{
+		std::string ltype = typeid(l).name();
+		std::string rtype = typeid(r).name();
+
+		CPtr lc = std::dynamic_pointer_cast<Container>(l);
+		CPtr rc = std::dynamic_pointer_cast<Container>(r);
+
+		std::cout << "swapping: " << lc << "(" << ltype << "), " << rc << "(" << rtype + ")" << std::endl;
+		std::cout << std::endl;
+	}
+}
+
+/**
+ * swap_test1
+ */
+void
+swap_test1 (void)
+{
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (c, d); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (c, p); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (c, f); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (d, c); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (d, p); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (d, f); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (p, c); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (p, d); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (p, f); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (f, c); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (f, d); }
+	{ CPtr c = Container::create(); DPtr d = Disk::create(); PPtr p = Partition::create(); FPtr f = Filesystem::create(); swap (f, p); }
+}
+
+/**
+ * swap_test2
+ */
+void
+swap_test2 (void)
+{
+	CPtr c = Container::create();
+	DPtr d = Disk::create();
+	PPtr p = Partition::create();
+	FPtr f = Filesystem::create();
+
+	std::cout << sizeof(c) << std::endl;
+	std::cout << sizeof(d) << std::endl;
+	std::cout << sizeof(p) << std::endl;
+	std::cout << sizeof(f) << std::endl;
+	std::cout << std::endl;
+
+	swap (c, d);
+	swap (c, p);
+	swap (c, f);
+	swap (d, c);
+	swap (d, p);
+	swap (d, f);
+	swap (p, c);
+	swap (p, d);
+	swap (p, f);
+	swap (f, c);
+	swap (f, d);
+	swap (f, p);
+}
+
+/**
+ * swap_test3
+ */
+void
+swap_test3 (void)
+{
+	{
+		DPtr d1 = Disk::create(); d1->set_device ("apple");
+		DPtr d2 = Disk::create(); d2->set_device ("banana");
+
+		std::cout << d1->get_device() << ", " << d2->get_device() << std::endl;
+		swap (d1, d2);
+		std::cout << d1->get_device() << ", " << d2->get_device() << std::endl << std::endl;
+	}
+	{
+		DPtr d1 = Disk::create(); d1->set_device ("apple");
+		DPtr d2 = Disk::create(); d2->set_device ("banana");
+
+		CPtr c1 = std::dynamic_pointer_cast<Container> (d1);
+		CPtr c2 = std::dynamic_pointer_cast<Container> (d2);
+
+		std::cout << d1->get_device() << ", " << d2->get_device() << std::endl;
+		swap (c1, c2);
+		std::cout << d1->get_device() << ", " << d2->get_device() << std::endl << std::endl;
+
+		std::cout << d1.get() << ", " << d2.get() << std::endl;
+		std::cout << c1.get() << ", " << c2.get() << std::endl << std::endl;
+	}
+}
+
 #endif
 
 /**
@@ -159,6 +270,7 @@ lambda_lambda (CPtr& c)
  */
 int main (int, char *[])
 {
+#if 0
 	CPtr c  = Container::create();
 	DPtr d  = Disk::create();
 	FPtr f1 = Filesystem::create();
@@ -184,6 +296,7 @@ int main (int, char *[])
 
 	dot (c);
 	dot (d_copy);
+#endif
 
 #if 0
 	Timeline tl;

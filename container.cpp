@@ -29,7 +29,7 @@ Container::Container (const Container& c) :
 	size (c.size)
 	//don't copy 'me'
 {
-	std::cout << __PRETTY_FUNCTION__ << " : " << c.name << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << " : " << c.name << std::endl;
 
 	for (auto child : c.children) {
 		children.push_back (child->copy());

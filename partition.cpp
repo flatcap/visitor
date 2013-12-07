@@ -27,7 +27,7 @@ Partition::Partition (const Partition& p) :
 	Container (p),
 	id (p.id)
 {
-	std::cout << __PRETTY_FUNCTION__ << " : " << p.id << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << " : " << p.id << std::endl;
 }
 
 /**

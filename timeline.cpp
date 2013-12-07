@@ -21,6 +21,7 @@
 
 #include "timeline.h"
 #include "container.h"
+#include "filesystem.h"
 #include "utils.h"
 
 /**
@@ -152,7 +153,12 @@ dump_dot_small (const CPtr& c)
 
 	dot << "obj_" << c << " [fillcolor=\"" << colour << "\",label=<<table cellspacing=\"0\" border=\"0\"><tr><td>\n";
 	dot << "<font point-size=\"16\"><b>" << (char)toupper(name[0]) << "</b></font> (" << c->get_seqnum() << ")</td></tr><tr><td>\n";
-	dot << "<font point-size=\"10\">" << c << "</font></td></tr></table>\n";
+	dot << "<font point-size=\"10\">" << c << "</font></td></tr>";
+	if (name == "filesystem") {
+		FPtr f = std::dynamic_pointer_cast<Filesystem> (c);
+		dot << "<tr><td>"+f->get_label()+"</td></tr>";
+	}
+	dot << "</table>\n";
 	dot << ">];\n";
 
 	for (auto const& child : c->get_children()) {

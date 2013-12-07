@@ -27,7 +27,7 @@ Disk::Disk (const Disk& d) :
 	Container (d),
 	device (d.device)
 {
-	std::cout << __PRETTY_FUNCTION__ << " : " << d.device << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << " : " << d.device << std::endl;
 }
 
 /**

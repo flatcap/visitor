@@ -27,7 +27,7 @@ Filesystem::Filesystem (const Filesystem& f) :
 	Container (f),
 	label (f.label)
 {
-	std::cout << __PRETTY_FUNCTION__ << " : " << f.label << std::endl;
+	//std::cout << __PRETTY_FUNCTION__ << " : " << f.label << std::endl;
 }
 
 /**

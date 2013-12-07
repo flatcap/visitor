@@ -40,6 +40,7 @@ public:
 	std::string set_device (std::string value);
 
 protected:
+public:
 	Disk (void) = default;
 	Disk (const Disk& d);
 	Disk&  operator= (const Disk& d);

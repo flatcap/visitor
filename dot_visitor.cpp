@@ -121,7 +121,7 @@ DotVisitor::visit (CPtr& c)
 	output << "obj_" << (void*) c.get() << " [fillcolor=\"#c0c0c0\",label=<<table cellspacing=\"0\" border=\"0\">\n";
 	output << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" << (char)toupper(c->name[0]) << "</b></font> (" << (void*) c.get() << ")<font color=\"#ff0000\" point-size=\"20\"><b> : " << c->get_seqnum() << "</b></font></td></tr>\n";
 
-	output << dot_row ("size", c->get_size());
+	//output << dot_row ("size", c->get_size());
 
 	output << "</table>>];\n";
 
@@ -143,7 +143,7 @@ DotVisitor::visit (DPtr& d)
 	output << "obj_" << (void*) d.get() << " [fillcolor=\"#ffc0c0\",label=<<table cellspacing=\"0\" border=\"0\">\n";
 	output << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" << (char)toupper(d->name[0]) << "</b></font> (" << (void*) d.get() << ")<font color=\"#ff0000\" point-size=\"20\"><b> : " << d->get_seqnum() << "</b></font></td></tr>\n";
 
-	output << dot_row ("size",   d->get_size());
+	//output << dot_row ("size",   d->get_size());
 	output << dot_row ("device", d->get_device());
 
 	output << "</table>>];\n";
@@ -166,7 +166,7 @@ DotVisitor::visit (PPtr& p)
 	output << "obj_" << (void*) p.get() << " [fillcolor=\"#d0d080\",label=<<table cellspacing=\"0\" border=\"0\">\n";
 	output << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" << (char)toupper(p->name[0]) << "</b></font> (" << (void*) p.get() << ")<font color=\"#ff0000\" point-size=\"20\"><b> : " << p->get_seqnum() << "</b></font></td></tr>\n";
 
-	output << dot_row ("size", p->get_size());
+	//output << dot_row ("size", p->get_size());
 	output << dot_row ("id",   p->get_id());
 
 	output << "</table>>];\n";
@@ -189,7 +189,7 @@ DotVisitor::visit (FPtr& f)
 	output << "obj_" << (void*) f.get() << " [fillcolor=\"#80c080\",label=<<table cellspacing=\"0\" border=\"0\">\n";
 	output << "<tr><td align=\"left\" bgcolor=\"white\" colspan=\"3\"><font color=\"#000000\" point-size=\"20\"><b>" << (char)toupper(f->name[0]) << "</b></font> (" << (void*) f.get() << ")<font color=\"#ff0000\" point-size=\"20\"><b> : " << f->get_seqnum() << "</b></font></td></tr>\n";
 
-	output << dot_row ("size",  f->get_size());
+	//output << dot_row ("size",  f->get_size());
 	output << dot_row ("label", f->get_label());
 
 	output << "</table>>];\n";
@@ -215,10 +215,12 @@ DotVisitor::get_output (void)
  * run_dotty
  */
 void
-DotVisitor::run_dotty (const std::string& title)
+DotVisitor::run_dotty (void)
 {
-	std::string command = "dot -Tpng | display -title \"" + title + "\" -resize 70% - &";
+	static int x = 0;
+	std::string command = "dot -Tpng | display -geometry +" + std::to_string(x*180) + "+0 -title \"" + std::to_string(x+1) + "\" -resize 70% - &";
 
 	execute_command (command, output.str());
+	x++;
 }
 

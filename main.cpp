@@ -39,6 +39,18 @@
 #include "lambda_visitor.h"
 
 /**
+ * dot
+ */
+void
+dot (CPtr &c)
+{
+	DotVisitor dv;
+	c->accept (dv);
+	dv.run_dotty();
+}
+
+#if 0
+/**
  * dump
  */
 void
@@ -46,17 +58,6 @@ dump (CPtr& c)
 {
 	DumpVisitor v;
 	c->accept(v);
-}
-
-/**
- * dot
- */
-void
-dot (CPtr &c, int index)
-{
-	DotVisitor dv;
-	c->accept (dv);
-	dv.run_dotty (std::to_string(index));
 }
 
 /**
@@ -93,7 +94,6 @@ weak (CPtr& c, DPtr& d)
 	std::cout << wp.use_count() << std::endl;
 	std::cout << sp.use_count() << std::endl << std::endl;
 }
-
 
 /**
  * select
@@ -152,6 +152,7 @@ lambda_lambda (CPtr& c)
 	std::cout << std::endl;
 }
 
+#endif
 
 /**
  * main
@@ -159,55 +160,36 @@ lambda_lambda (CPtr& c)
 int main (int, char *[])
 {
 	CPtr c  = Container::create();
-
 	DPtr d  = Disk::create();
-	PPtr p1 = Partition::create();
-	PPtr p2 = Partition::create();
 	FPtr f1 = Filesystem::create();
-	FPtr f2 = Filesystem::create();
-
-	d->set_size   (1234);
-	d->set_device ("/dev/loop0");
-
-	p1->set_size   (632);
-	p1->set_id     (2);
-
-	p2->set_size   (243);
-	p2->set_id     (4);
-
-	f1->set_size   (630);
-	f1->set_label  ("wibble");
-
-	f2->set_size   (240);
-	f2->set_label  ("hatstand");
-
-	c->add_child (d);
-	d->add_child (p1);
-	p1->add_child (f1);
-	d->add_child (p2);
-	p2->add_child (f2);
-
-	int count = 1;
-	dot (c, count++);
-
 	d->set_device("orig");
-	CPtr d_work = d->copy();
-	DPtr dd_work = std::dynamic_pointer_cast<Disk> (d_work);
-	dd_work->set_device ("copied");
-	dot (d_work, count++);
-	d_work->remove_child(1);
-	dd_work->set_device ("post rm");
-	dot (d_work, count++);
-	dot (c, count++);
+	f1->set_label("apple");
+	c->add_child (d);
+	d->add_child (f1);
 
-	Timeline tl;
-	CPtr left (d);
-	CPtr right (d_work);
-	tl.backup (left, right, std::string ("rm part"));
-	tl.display();
-	dot (d_work, count++);
+
+	CPtr d_copy = d->copy();
+	DPtr dd_copy = std::dynamic_pointer_cast<Disk> (d_copy);
+	dd_copy->set_device("copy");
+	FPtr f_copy = std::dynamic_pointer_cast<Filesystem> (d_copy->get_children()[0]);
+
+	f_copy->set_label ("banana");
+
+	dot (c);
+	dot (d_copy);
+
+	Disk* swap_left  = dynamic_cast<Disk*> (d.get());
+	Disk* swap_right = dynamic_cast<Disk*> (d_copy.get());
+	std::swap (*swap_left, *swap_right);
+
+	dot (c);
+	dot (d_copy);
 
 #if 0
+	Timeline tl;
+	tl.backup (left, right, std::string ("label"));
+	tl.display();
+
 	tl.dump();
 	d->remove_child(1);
 	f1->set_label ("XXX");

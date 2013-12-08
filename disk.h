@@ -27,22 +27,23 @@ class Disk : public Container
 {
 public:
 	static DPtr create (void);
+	Disk (Disk&& d);
 	virtual ~Disk() = default;
 
-#if 0
-	virtual CPtr backup (void);
-	virtual void restore (void);
-#endif
+	Disk& operator= (const Disk& d);
+	Disk& operator= (Disk&& d);
 
-	bool accept (Visitor& v);
+	void swap (Disk& d);
+	friend void swap (Disk& lhs, Disk& rhs);
+
+	virtual bool accept (Visitor& v);
 
 	std::string get_device (void) const;
-	std::string set_device (std::string value);
+	std::string set_device (const std::string value);
 
 protected:
 	Disk (void) = default;
 	Disk (const Disk& d);
-	Disk&  operator= (const Disk& d);
 
 	virtual Disk* clone (void);
 

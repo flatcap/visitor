@@ -27,14 +27,16 @@ class Partition : public Container
 {
 public:
 	static PPtr create (void);
+	Partition (Partition&& p);
 	virtual ~Partition() = default;
 
-#if 0
-	virtual CPtr backup (void);
-	virtual void restore (void);
-#endif
+	Partition& operator= (const Partition& p);
+	Partition& operator= (Partition&& p);
 
-	bool accept (Visitor& v);
+	void swap (Partition& p);
+	friend void swap (Partition& lhs, Partition& rhs);
+
+	virtual bool accept (Visitor& v);
 
 	int get_id (void) const;
 	int set_id (int value);
@@ -42,7 +44,6 @@ public:
 protected:
 	Partition (void) = default;
 	Partition (const Partition& p);
-	Partition&  operator= (const Partition& p);
 
 	virtual Partition* clone (void);
 

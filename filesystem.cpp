@@ -21,31 +21,6 @@
 #include "visitor.h"
 
 /**
- * Filesystem (copy)
- */
-Filesystem::Filesystem (const Filesystem& f) :
-	Container (f),
-	label (f.label)
-{
-	//std::cout << __PRETTY_FUNCTION__ << " : " << f.label << std::endl;
-}
-
-/**
- * operator=
- */
-Filesystem&
-Filesystem::operator= (const Filesystem& f)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	Container::operator= (f);
-
-	label = f.label;
-
-	return *this;
-}
-
-
-/**
  * create (static)
  */
 FPtr
@@ -57,46 +32,75 @@ Filesystem::create (void)
 
 	FPtr fp (f);
 
-	f->me = fp;
+	f->me = fp;	// keep a weak pointer to myself
 
 	return fp;
 }
 
 
-#if 0
 /**
- * backup
+ * Filesystem (copy)
  */
-CPtr
-Filesystem::backup (void)
+Filesystem::Filesystem (const Filesystem& f) :
+	Container (f),
+	label (f.label)
 {
-	//Container::backup();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-	CPtr old (new Filesystem (*this));
-	return old;
+	std::cout << "Filesystem ctor (copy): " << f.label << std::endl;
 }
 
 /**
- * restore
+ * Filesystem (move)
+ */
+Filesystem::Filesystem (Filesystem&& f)
+{
+	std::cout << "Filesystem ctor (move): " << f.label << std::endl;
+	swap (f);
+}
+
+
+/**
+ * operator= (copy)
+ */
+Filesystem&
+Filesystem::operator= (const Filesystem& f)
+{
+	std::cout << "Filesystem assign (copy): " << label << ", " << f.label << std::endl;
+	Container::operator= (f);
+
+	label = f.label;
+	return *this;
+}
+
+/**
+ * operator= (move)
+ */
+Filesystem&
+Filesystem::operator= (Filesystem&& f)
+{
+	std::cout << "Filesystem assign (move): " << label << ", " << f.label << std::endl;
+	swap (f);
+	return *this;
+}
+
+
+/**
+ * swap (member)
  */
 void
-Filesystem::restore (void)
+Filesystem::swap (Filesystem& f)
 {
-	Container::restore();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << "Filesystem swap (member): " << label << ", " << f.label << std::endl;
+	Container::swap (f);
+	std::swap (label, f.label);
 }
 
-#endif
-
 /**
- * clone
+ * swap (global)
  */
-Filesystem*
-Filesystem::clone (void)
+void swap (Filesystem& lhs, Filesystem& rhs)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	return new Filesystem (*this);
+	std::cout << "Filesystem swap (global): " << lhs.label << ", " << rhs.label << std::endl;
+	lhs.swap (rhs);
 }
 
 
@@ -110,6 +114,16 @@ Filesystem::accept (Visitor& v)
 	if (!v.visit (f))
 		return false;
 	return visit_children (v);
+}
+
+/**
+ * clone
+ */
+Filesystem*
+Filesystem::clone (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	return new Filesystem (*this);
 }
 
 

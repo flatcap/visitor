@@ -32,16 +32,18 @@ class Container : public Backup
 {
 public:
 	static CPtr create (void);
+	Container (Container&& c);
 	virtual ~Container() = default;
 
-	CPtr copy (void);
+	Container& operator= (const Container& c);
+	Container& operator= (Container&& c);
 
-#if 0
-	virtual CPtr backup (void);
-	virtual void restore (void);
-#endif
+	void swap (Container& c);
+	friend void swap (Container& lhs, Container& rhs);
 
 	virtual bool accept (Visitor& v);
+
+	CPtr copy (void);
 
 	int get_size (void) const;
 	int set_size (int value);
@@ -56,7 +58,6 @@ public:
 protected:
 	Container (void) = default;
 	Container (const Container& c);
-	Container&  operator= (const Container& c);
 
 	virtual Container* clone (void);
 

@@ -21,31 +21,6 @@
 #include "visitor.h"
 
 /**
- * Disk (copy)
- */
-Disk::Disk (const Disk& d) :
-	Container (d),
-	device (d.device)
-{
-	//std::cout << __PRETTY_FUNCTION__ << " : " << d.device << std::endl;
-}
-
-/**
- * operator=
- */
-Disk&
-Disk::operator= (const Disk& d)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	Container::operator= (d);
-
-	device = d.device;
-
-	return *this;
-}
-
-
-/**
  * create (static)
  */
 DPtr
@@ -57,46 +32,76 @@ Disk::create (void)
 
 	DPtr dp (d);
 
-	d->me = dp;
+	d->me = dp;	// keep a weak pointer to myself
 
 	return dp;
 }
 
 
-#if 0
 /**
- * backup
+ * Disk (copy)
  */
-CPtr
-Disk::backup (void)
+Disk::Disk (const Disk& d) :
+	Container (d),
+	device (d.device)
 {
-	//Container::backup();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-	CPtr old (new Disk (*this));
-	return old;
+	std::cout << "Disk ctor (copy): " << d.device << std::endl;
 }
 
 /**
- * restore
+ * Disk (move)
+ */
+Disk::Disk (Disk&& d)
+{
+	std::cout << "Disk ctor (move): " << d.device << std::endl;
+	swap (d);
+}
+
+
+/**
+ * operator= (copy)
+ */
+Disk&
+Disk::operator= (const Disk& d)
+{
+	std::cout << "Disk assign (copy): "<< device << ", " << d.device << std::endl;
+	Container::operator= (d);
+
+	device = d.device;
+
+	return *this;
+}
+
+/**
+ * operator= (move)
+ */
+Disk&
+Disk::operator= (Disk&& d)
+{
+	std::cout << "Disk assign (move): "<< device << ", " << d.device << std::endl;
+	swap (d);
+	return *this;
+}
+
+
+/**
+ * swap (member)
  */
 void
-Disk::restore (void)
+Disk::swap (Disk& d)
 {
-	Container::restore();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << "Disk swap (member): " << device << ", " << d.device << std::endl;
+	Container::swap (d);
+	std::swap (device, d.device);
 }
 
-#endif
-
 /**
- * clone
+ * swap (global)
  */
-Disk*
-Disk::clone (void)
+void swap (Disk& lhs, Disk& rhs)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	return new Disk (*this);
+	std::cout << "Disk swap (global): " << lhs.device << ", " << rhs.device << std::endl;
+	lhs.swap (rhs);
 }
 
 
@@ -110,6 +115,16 @@ Disk::accept (Visitor& v)
 	if (!v.visit (d))
 		return false;
 	return visit_children (v);
+}
+
+/**
+ * clone
+ */
+Disk*
+Disk::clone (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	return new Disk (*this);
 }
 
 

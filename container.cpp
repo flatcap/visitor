@@ -21,40 +21,6 @@
 #include "visitor.h"
 
 /**
- * Container (copy)
- */
-Container::Container (const Container& c) :
-	Backup (c),
-	name (c.name),
-	size (c.size)
-	//don't copy 'me'
-{
-	//std::cout << __PRETTY_FUNCTION__ << " : " << c.name << std::endl;
-
-	for (auto child : c.children) {
-		children.push_back (child->copy());
-	}
-}
-
-/**
- * operator=
- */
-Container&
-Container::operator= (const Container& c)
-{
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	Backup::operator= (c);
-
-	name     = c.name;
-	size     = c.size;
-	children = c.children;
-	//don't copy 'me'
-
-	return *this;
-}
-
-
-/**
  * create (static)
  */
 CPtr
@@ -69,6 +35,82 @@ Container::create (void)
 	c->me = cp;	// keep a weak pointer to myself
 
 	return cp;
+}
+
+
+/**
+ * Container (copy)
+ */
+Container::Container (const Container& c) :
+	Backup (c),
+	name (c.name),
+	size (c.size)
+	//don't copy 'me'
+{
+	std::cout << "Container ctor (copy): " << c.size << std::endl;
+
+	for (auto child : c.children) {
+		children.push_back (child->copy());
+	}
+}
+
+/**
+ * Container (move)
+ */
+Container::Container (Container&& c)
+{
+	std::cout << "Container ctor (move): " << c.size << std::endl;
+	swap (c);
+}
+
+
+/**
+ * operator= (copy)
+ */
+Container&
+Container::operator= (const Container& c)
+{
+	std::cout << "Container assign (copy): " << size << ", " << c.size << std::endl;
+	Backup::operator= (c);
+
+	name     = c.name;
+	size     = c.size;
+	children = c.children;
+	//don't copy 'me'
+
+	return *this;
+}
+
+/**
+ * operator= (move)
+ */
+Container&
+Container::operator= (Container&& c)
+{
+	std::cout << "Container assign (move): " << size << ", " << c.size << std::endl;
+	swap (c);
+	return *this;
+}
+
+
+/**
+ * swap (member)
+ */
+void
+Container::swap (Container& c)
+{
+	std::cout << "Container swap (member): " << size << ", " << c.size << std::endl;
+	std::swap (size, c.size);
+	std::swap (children, c.children);
+}
+
+/**
+ * swap (global)
+ */
+void swap (Container& lhs, Container& rhs)
+{
+	std::cout << "Container swap (global): " << lhs.size << ", " << rhs.size << std::endl;
+	lhs.swap (rhs);
 }
 
 
@@ -105,42 +147,6 @@ Container::accept (Visitor& v)
 	return visit_children (v);
 }
 
-
-#if 0
-/**
- * backup
- */
-CPtr
-Container::backup (void)
-{
-#if 0
-	CPtr copy (create());
-
-	*copy = this;
-
-	return copy;
-#endif
-	CPtr old (new Container (*this));
-	return old;
-}
-
-/**
- * restore
- */
-void
-Container::restore (void)
-{
-	Backup::restore();
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-	changed();
-	for (auto c : children) {
-		c->restore();
-	}
-}
-
-#endif
-
 /**
  * clone
  */
@@ -150,6 +156,7 @@ Container::clone (void)
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	return new Container (*this);
 }
+
 
 /**
  * copy
@@ -176,7 +183,6 @@ Container::get_size (void) const
 {
 	return size;
 }
-
 
 /**
  * set_size
@@ -224,3 +230,5 @@ Container::get_children (void)
 {
 	return children;
 }
+
+

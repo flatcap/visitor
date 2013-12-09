@@ -27,6 +27,7 @@ static int base_seqnum = 1000;
 Backup::Backup()
 {
 	seqnum = base_seqnum;
+	std::cout << "Backup ctor (default): " << seqnum << std::endl;
 	base_seqnum += 1000;
 }
 
@@ -36,7 +37,16 @@ Backup::Backup()
 Backup::Backup (const Backup& b) :
 	seqnum (b.seqnum)
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << "Backup ctor (copy): " << b.seqnum << std::endl;
+}
+
+/**
+ * Backup (move)
+ */
+Backup::Backup (Backup&& b)
+{
+	std::cout << "Backup ctor (move): " << b.seqnum << std::endl;
+	swap (b);
 }
 
 
@@ -50,6 +60,26 @@ Backup::operator= (const Backup& b)
 	// Nothing to do, for now
 
 	return *this;
+}
+
+
+/**
+ * swap (member)
+ */
+void
+Backup::swap (Backup& b)
+{
+	std::cout << "Backup swap (member): " << seqnum << ", " << b.seqnum << std::endl;
+	std::swap (seqnum, b.seqnum);
+}
+
+/**
+ * swap (global)
+ */
+void swap (Backup& lhs, Backup& rhs)
+{
+	std::cout << "Backup swap (global): " << lhs.seqnum << ", " << rhs.seqnum << std::endl;
+	lhs.swap (rhs);
 }
 
 

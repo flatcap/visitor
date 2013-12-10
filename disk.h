@@ -27,6 +27,7 @@ class Disk : public Container
 {
 public:
 	static DPtr create (void);
+
 	Disk (Disk&& d);
 	virtual ~Disk() = default;
 
@@ -35,8 +36,6 @@ public:
 
 	void swap (Disk& d);
 	friend void swap (Disk& lhs, Disk& rhs);
-
-	virtual bool accept (Visitor& v);
 
 	std::string get_device (void) const;
 	std::string set_device (const std::string value);
@@ -48,7 +47,11 @@ protected:
 	virtual Disk* clone (void);
 
 private:
+	int a;
+	int b;
 	std::string device;
+	int c;
+	int d;
 };
 
 

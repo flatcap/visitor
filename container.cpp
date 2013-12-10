@@ -18,7 +18,8 @@
 #include <iostream>
 
 #include "container.h"
-#include "visitor.h"
+
+static int base_seqnum = 1000;
 
 /**
  * create (static)
@@ -39,10 +40,19 @@ Container::create (void)
 
 
 /**
+ * Container (default)
+ */
+Container::Container()
+{
+	seqnum = base_seqnum;
+	std::cout << "Container ctor (default): " << seqnum << std::endl;
+	base_seqnum += 1000;
+}
+
+/**
  * Container (copy)
  */
 Container::Container (const Container& c) :
-	Backup (c),
 	name (c.name),
 	size (c.size)
 	//don't copy 'me'
@@ -71,7 +81,6 @@ Container&
 Container::operator= (const Container& c)
 {
 	std::cout << "Container assign (copy): " << size << ", " << c.size << std::endl;
-	Backup::operator= (c);
 
 	name     = c.name;
 	size     = c.size;
@@ -113,39 +122,6 @@ void swap (Container& lhs, Container& rhs)
 	lhs.swap (rhs);
 }
 
-
-/**
- * visit_children
- */
-bool
-Container::visit_children (Visitor& v)
-{
-	CPtr c = me.lock();
-	if (!v.visit_enter (c))
-		return false;
-
-	for (auto c : children) {
-		if (!c->accept (v))
-			return false;
-	}
-
-	if (!v.visit_leave())
-		return false;
-
-	return true;
-}
-
-/**
- * accept
- */
-bool
-Container::accept (Visitor& v)
-{
-	CPtr c = me.lock();
-	if (!v.visit (c))
-		return false;
-	return visit_children (v);
-}
 
 /**
  * clone
@@ -232,3 +208,35 @@ Container::get_children (void)
 }
 
 
+/**
+ * changed
+ */
+void
+Container::changed (void)
+{
+	if (seqnum < 1)
+		return;
+
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	seqnum++;
+}
+
+/**
+ * get_seqnum
+ */
+int
+Container::get_seqnum (void)
+{
+	return seqnum;
+}
+
+
+std::ostream&
+operator<< (std::ostream &stream, const CPtr &c)
+{
+	stream << "C["
+		<< p << ","
+		<< q << ","
+		<< r << ","
+		<< s << "]";
+}

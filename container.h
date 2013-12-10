@@ -21,14 +21,11 @@
 #include <vector>
 
 #include "pointers.h"
-#include "backup.h"
-
-class Visitor;
 
 /**
  * class Container
  */
-class Container : public Backup
+class Container
 {
 public:
 	static CPtr create (void);
@@ -40,8 +37,6 @@ public:
 
 	void swap (Container& c);
 	friend void swap (Container& lhs, Container& rhs);
-
-	virtual bool accept (Visitor& v);
 
 	CPtr copy (void);
 
@@ -55,19 +50,29 @@ public:
 
 	std::string name;
 
+	int get_seqnum (void);
+
 protected:
-	Container (void) = default;
+	Container (void);
 	Container (const Container& c);
 
 	virtual Container* clone (void);
 
-	bool visit_children (Visitor& v);
-
 	std::weak_ptr<Container> me;
 
+	void changed (void);
+
+	friend std::ostream & operator<< (std::ostream &stream, const CPtr &c);
+
 private:
+	int p;
+	int q;
 	int size = 0;
 	std::vector<CPtr> children;
+
+	int seqnum = 1;
+	int r;
+	int s;
 };
 
 

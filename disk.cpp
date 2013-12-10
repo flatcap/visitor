@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "disk.h"
-#include "visitor.h"
 
 /**
  * create (static)
@@ -106,29 +105,6 @@ void swap (Disk& lhs, Disk& rhs)
 
 
 /**
- * accept
- */
-bool
-Disk::accept (Visitor& v)
-{
-	DPtr d = std::dynamic_pointer_cast<Disk> (me.lock());
-	if (!v.visit (d))
-		return false;
-	return visit_children (v);
-}
-
-/**
- * clone
- */
-Disk*
-Disk::clone (void)
-{
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	return new Disk (*this);
-}
-
-
-/**
  * get_device
  */
 std::string
@@ -147,6 +123,17 @@ Disk::set_device (std::string value)
 	device = value;
 	changed();
 	return old;
+}
+
+
+/**
+ * clone
+ */
+Disk*
+Disk::clone (void)
+{
+	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	return new Disk (*this);
 }
 
 

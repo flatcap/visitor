@@ -18,9 +18,12 @@
 #ifndef _CONTAINER_H_
 #define _CONTAINER_H_
 
+#include <map>
+#include <string>
 #include <vector>
 
 #include "pointers.h"
+#include "variant.h"
 
 /**
  * class Container
@@ -38,7 +41,7 @@ public:
 	void swap (Container& c);
 	friend void swap (Container& lhs, Container& rhs);
 
-	CPtr copy (void);
+	CPtr copy (void) const;
 
 	int get_size (void) const;
 	int set_size (int value);
@@ -52,27 +55,24 @@ public:
 
 	int get_seqnum (void);
 
+	friend std::ostream & operator<< (std::ostream &stream, const CPtr &c);
+
 protected:
 	Container (void);
 	Container (const Container& c);
 
-	virtual Container* clone (void);
-
-	std::weak_ptr<Container> me;
+	virtual Container* clone (void) const;
 
 	void changed (void);
 
-	friend std::ostream & operator<< (std::ostream &stream, const CPtr &c);
+	std::weak_ptr<Container> weak;
 
+	std::map<std::string,Variant> props;
 private:
-	int p;
-	int q;
 	int size = 0;
 	std::vector<CPtr> children;
 
 	int seqnum = 1;
-	int r;
-	int s;
 };
 
 

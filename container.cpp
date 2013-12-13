@@ -33,7 +33,7 @@ Container::create (void)
 
 	CPtr cp (c);
 
-	c->me = cp;	// keep a weak pointer to myself
+	c->weak = cp;	// keep a weak pointer to myself
 
 	return cp;
 }
@@ -55,7 +55,7 @@ Container::Container()
 Container::Container (const Container& c) :
 	name (c.name),
 	size (c.size)
-	//don't copy 'me'
+	//don't copy 'weak'
 {
 	std::cout << "Container ctor (copy): " << c.size << std::endl;
 
@@ -85,7 +85,7 @@ Container::operator= (const Container& c)
 	name     = c.name;
 	size     = c.size;
 	children = c.children;
-	//don't copy 'me'
+	//don't copy 'weak'
 
 	return *this;
 }
@@ -111,6 +111,7 @@ Container::swap (Container& c)
 	std::cout << "Container swap (member): " << size << ", " << c.size << std::endl;
 	std::swap (size, c.size);
 	std::swap (children, c.children);
+	std::swap (this->props, c.props);
 }
 
 /**
@@ -127,7 +128,7 @@ void swap (Container& lhs, Container& rhs)
  * clone
  */
 Container*
-Container::clone (void)
+Container::clone (void) const
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	return new Container (*this);
@@ -138,14 +139,14 @@ Container::clone (void)
  * copy
  */
 CPtr
-Container::copy (void)
+Container::copy (void) const
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	Container *c = clone();
 
 	CPtr cp (c);
 
-	c->me = cp;	// keep a weak pointer to myself
+	c->weak = cp;	// keep a weak pointer to myself
 
 	return cp;
 }
@@ -231,12 +232,18 @@ Container::get_seqnum (void)
 }
 
 
+/**
+ * operator<<
+ */
 std::ostream&
 operator<< (std::ostream &stream, const CPtr &c)
 {
-	stream << "C["
-		<< p << ","
-		<< q << ","
-		<< r << ","
-		<< s << "]";
+	stream << "C[";
+	for (auto i : c->props) {
+		stream << "(" << i.first << "=" << (std::string) i.second << ")";
+	}
+	stream << "]";
+
+	return stream;
 }
+

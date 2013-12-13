@@ -18,6 +18,8 @@
 #ifndef _DISK_H_
 #define _DISK_H_
 
+#include <string>
+
 #include "container.h"
 
 /**
@@ -40,18 +42,16 @@ public:
 	std::string get_device (void) const;
 	std::string set_device (const std::string value);
 
+	friend std::ostream & operator<< (std::ostream &stream, const DPtr &c);
+
 protected:
 	Disk (void) = default;
 	Disk (const Disk& d);
 
-	virtual Disk* clone (void);
+	virtual Disk* clone (void) const;
 
 private:
-	int a;
-	int b;
 	std::string device;
-	int c;
-	int d;
 };
 
 

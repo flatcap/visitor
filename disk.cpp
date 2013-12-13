@@ -19,6 +19,8 @@
 
 #include "disk.h"
 
+static int counter = 1;
+
 /**
  * create (static)
  */
@@ -29,10 +31,17 @@ Disk::create (void)
 
 	d->name = "disk";
 
+	counter++;
+
+	d->props["integer"] = 42 * counter;
+	d->props["double"] = 3.14159 * counter;
+	d->props["str"] = "hello_" + std::to_string (counter);
+
 	DPtr dp (d);
 
-	d->me = dp;	// keep a weak pointer to myself
+	d->weak = dp;	// keep a weak pointer to myself
 
+	std::cout << "Disk create: " << dp << std::endl;
 	return dp;
 }
 
@@ -91,7 +100,7 @@ Disk::swap (Disk& d)
 {
 	std::cout << "Disk swap (member): " << device << ", " << d.device << std::endl;
 	Container::swap (d);
-	std::swap (device, d.device);
+	std::swap (this->device, d.device);
 }
 
 /**
@@ -130,10 +139,23 @@ Disk::set_device (std::string value)
  * clone
  */
 Disk*
-Disk::clone (void)
+Disk::clone (void) const
 {
 	//std::cout << __PRETTY_FUNCTION__ << std::endl;
 	return new Disk (*this);
 }
 
 
+/**
+ * operator<<
+ */
+std::ostream&
+operator<< (std::ostream &stream, const DPtr &d)
+{
+	CPtr c(d);
+	stream << c;
+
+	stream << " D[" << d->device << "]";
+
+	return stream;
+}

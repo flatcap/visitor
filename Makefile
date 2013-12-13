@@ -2,7 +2,7 @@ CC	= g++
 RM	= rm -fr
 MKDIR	= mkdir -p
 
-SRC	+= container.cpp disk.cpp main.cpp
+SRC	+= container.cpp disk.cpp main.cpp variant.cpp
 
 #HDR	= $(SRC:%.cpp=%.h)
 

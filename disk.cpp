@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "disk.h"
+#include "variant.h"
 
 static int counter = 1;
 
@@ -29,13 +30,16 @@ Disk::create (void)
 {
 	Disk* d = new Disk();
 
-	d->name = "disk";
+	d->set_type ("disk");
 
+	d->_a = counter;
+	d->_b = counter + 1;
+	d->_c = counter + 2;
 	counter++;
 
-	d->props["integer"] = 42 * counter;
-	d->props["double"] = 3.14159 * counter;
-	d->props["str"] = "hello_" + std::to_string (counter);
+	d->set_prop ("integer", 42 * counter);
+	d->set_prop ("double",  3.14159 * counter);
+	d->set_prop ("str",     std::to_string (counter));
 
 	DPtr dp (d);
 
@@ -50,10 +54,12 @@ Disk::create (void)
  * Disk (copy)
  */
 Disk::Disk (const Disk& d) :
-	Container (d),
-	device (d.device)
+	Container (d)
 {
-	std::cout << "Disk ctor (copy): " << d.device << std::endl;
+	std::cout << "Disk ctor (copy)" << std::endl;
+	_a = d._a;
+	_b = d._b;
+	_c = d._c;
 }
 
 /**
@@ -61,7 +67,7 @@ Disk::Disk (const Disk& d) :
  */
 Disk::Disk (Disk&& d)
 {
-	std::cout << "Disk ctor (move): " << d.device << std::endl;
+	std::cout << "Disk ctor (move)" << std::endl;
 	swap (d);
 }
 
@@ -72,10 +78,12 @@ Disk::Disk (Disk&& d)
 Disk&
 Disk::operator= (const Disk& d)
 {
-	std::cout << "Disk assign (copy): "<< device << ", " << d.device << std::endl;
+	std::cout << "Disk assign (copy)" << std::endl;
 	Container::operator= (d);
 
-	device = d.device;
+	_a = d._a;
+	_b = d._b;
+	_c = d._c;
 
 	return *this;
 }
@@ -86,7 +94,7 @@ Disk::operator= (const Disk& d)
 Disk&
 Disk::operator= (Disk&& d)
 {
-	std::cout << "Disk assign (move): "<< device << ", " << d.device << std::endl;
+	std::cout << "Disk assign (move)" << std::endl;
 	swap (d);
 	return *this;
 }
@@ -98,9 +106,8 @@ Disk::operator= (Disk&& d)
 void
 Disk::swap (Disk& d)
 {
-	std::cout << "Disk swap (member): " << device << ", " << d.device << std::endl;
+	std::cout << "Disk swap (member)" << std::endl;
 	Container::swap (d);
-	std::swap (this->device, d.device);
 }
 
 /**
@@ -108,30 +115,8 @@ Disk::swap (Disk& d)
  */
 void swap (Disk& lhs, Disk& rhs)
 {
-	std::cout << "Disk swap (global): " << lhs.device << ", " << rhs.device << std::endl;
+	std::cout << "Disk swap (global)" << std::endl;
 	lhs.swap (rhs);
-}
-
-
-/**
- * get_device
- */
-std::string
-Disk::get_device (void) const
-{
-	return device;
-}
-
-/**
- * set_device
- */
-std::string
-Disk::set_device (std::string value)
-{
-	std::string old = device;
-	device = value;
-	changed();
-	return old;
 }
 
 
@@ -141,7 +126,7 @@ Disk::set_device (std::string value)
 Disk*
 Disk::clone (void) const
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	return new Disk (*this);
 }
 
@@ -155,7 +140,7 @@ operator<< (std::ostream &stream, const DPtr &d)
 	CPtr c(d);
 	stream << c;
 
-	stream << " D[" << d->device << "]";
+	stream << " D[" << d->_a << d->_b << d->_c << "]";
 
 	return stream;
 }

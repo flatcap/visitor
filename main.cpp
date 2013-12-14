@@ -41,6 +41,16 @@ copy (const std::shared_ptr<T> &orig)
 	return std::dynamic_pointer_cast<T> (orig->copy());
 }
 
+/**
+ * swap (helper)
+ */
+template<typename T>
+void
+swap_objects (std::shared_ptr<T> lhs, std::shared_ptr<T> rhs)
+{
+	std::cout << "my shared_ptr swap\n";
+	swap (*lhs.get(), *rhs.get());
+}
 
 /**
  * move_c
@@ -51,16 +61,13 @@ move_c (void)
 	CPtr c1  = Container::create();
 	CPtr c2  = Container::create();
 
-	c1->set_size (42);
-	c2->set_size (99);
-
 	CPtr c3 (c1);
 	CPtr c4 (c2);
 
 	std::cout << c1 << std::endl;
-	swap (*c3.get(), *c4.get());
+	swap_objects (c3, c4);
 	std::cout << c1 << std::endl;
-	swap (*c3.get(), *c4.get());
+	swap_objects (c3, c4);
 	std::cout << c1 << std::endl;
 	std::cout << std::endl;
 }
@@ -72,27 +79,38 @@ void
 move_d (void)
 {
 	DPtr d1 = Disk::create();
-	DPtr d2;
+	DPtr d2 = Disk::create();
 
-	d1->set_size (42);
-	d1->set_device ("apple");
 #if 0
-	d2->set_size (99);
-	d2->set_device ("banana");
-#endif
-
 	d2 = copy(d1);
+
+	std::cout << d1 << std::endl;
+	swap_objects (d1, d2);
+	std::cout << d1 << std::endl;
+#endif
 
 #if 1
 	DPtr d3 (d1);
 	DPtr d4 (d2);
 
 	std::cout << d1 << std::endl;
-	swap (*d3.get(), *d4.get());
+	swap_objects (d3, d4);
 	std::cout << d1 << std::endl;
-	swap (*d3.get(), *d4.get());
+	swap_objects (d3, d4);
 	std::cout << d1 << std::endl;
 	std::cout << std::endl;
+#endif
+
+#if 0
+	const Disk *d5 = d1.get();
+	const Variant &v = d5->get_prop ("double");
+	std::cout << "d = " << (double)v << "(" << (int) v.type << ")" << std::endl;
+#endif
+	Variant &v = d1->get_prop ("double");
+	std::cout << "d = " << (double)v << std::endl;
+#if 1
+	v = 123.456;
+	std::cout << "d = " << (double)v << std::endl;
 #endif
 }
 
@@ -102,8 +120,6 @@ move_d (void)
  */
 int main (int, char *[])
 {
-	using namespace std;
-
 #if 0
 	move_c();
 #endif
@@ -113,15 +129,15 @@ int main (int, char *[])
 	DPtr d1 = Disk::create();
 	DPtr d2 = Disk::create();
 
-	cout << d1 << endl;
-	cout << d2 << endl;
-	cout << endl;
+	std::cout << d1 << std::endl;
+	std::cout << d2 << std::endl;
+	std::cout << std::endl;
 
 	swap (*d1.get(), *d2.get());
 
-	cout << d1 << endl;
-	cout << d2 << endl;
-	cout << endl;
+	std::cout << d1 << std::endl;
+	std::cout << d2 << std::endl;
+	std::cout << std::endl;
 #endif
 
 	return 0;

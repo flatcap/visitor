@@ -50,17 +50,17 @@ public:
 	Variant& operator= (const Variant&  v) = default;
 	Variant& operator= (      Variant&& v) = default;
 
-	operator std::string (void);		// cast Variant to type
-	operator double      (void);
-	operator bool        (void);
-	operator uint8_t     (void);
-	operator  int8_t     (void);
-	operator uint16_t    (void);
-	operator  int16_t    (void);
-	operator uint32_t    (void);
-	operator  int32_t    (void);
-	operator uint64_t    (void);
-	operator  int64_t    (void);
+	operator std::string (void) const;	// cast Variant to type
+	operator double      (void) const;
+	operator bool        (void) const;
+	operator uint8_t     (void) const;
+	operator  int8_t     (void) const;
+	operator uint16_t    (void) const;
+	operator  int16_t    (void) const;
+	operator uint32_t    (void) const;
+	operator  int32_t    (void) const;
+	operator uint64_t    (void) const;
+	operator  int64_t    (void) const;
 
 	enum class Tag {
 		t_unset,	// Empty
@@ -78,6 +78,7 @@ public:
 	} type = Tag::t_unset;
 
 protected:
+public:
 	friend std::ostream& operator<< (std::ostream& os, const Variant* v);
 	friend std::ostream& operator<< (std::ostream& os, const Variant& v);
 

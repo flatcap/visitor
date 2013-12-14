@@ -133,7 +133,7 @@ Variant::Variant (int64_t value) :
 /**
  * cast (string)
  */
-Variant::operator std::string (void)
+Variant::operator std::string (void) const
 {
 	switch (type) {
 		case Variant::Tag::t_string:	return s_value;
@@ -159,7 +159,7 @@ Variant::operator std::string (void)
 /**
  * cast (double)
  */
-Variant::operator double()
+Variant::operator double() const
 {
 	switch (type) {
 		case Variant::Tag::t_double:	return d_value;
@@ -185,7 +185,7 @@ Variant::operator double()
 /**
  * cast (bool)
  */
-Variant::operator bool()
+Variant::operator bool() const
 {
 	switch (type) {
 		case Variant::Tag::t_string:	return (!s_value.empty());
@@ -211,7 +211,7 @@ Variant::operator bool()
 /**
  * cast (uint8_t)
  */
-Variant::operator uint8_t()
+Variant::operator uint8_t() const
 {
 	switch (type) {
 		case Variant::Tag::t_bool:
@@ -238,7 +238,7 @@ Variant::operator uint8_t()
 /**
  * cast (int8_t)
  */
-Variant::operator int8_t()
+Variant::operator int8_t() const
 {
 	switch (type) {
 		case Variant::Tag::t_bool:
@@ -265,7 +265,7 @@ Variant::operator int8_t()
 /**
  * cast (uint16_t)
  */
-Variant::operator uint16_t()
+Variant::operator uint16_t() const
 {
 	switch (type) {
 		case Variant::Tag::t_bool:
@@ -292,7 +292,7 @@ Variant::operator uint16_t()
 /**
  * cast (int16_t)
  */
-Variant::operator int16_t()
+Variant::operator int16_t() const
 {
 	switch (type) {
 		case Variant::Tag::t_bool:
@@ -319,7 +319,7 @@ Variant::operator int16_t()
 /**
  * cast (uint32_t)
  */
-Variant::operator uint32_t()
+Variant::operator uint32_t() const
 {
 	switch (type) {
 		case Variant::Tag::t_bool:
@@ -346,7 +346,7 @@ Variant::operator uint32_t()
 /**
  * cast (int32_t)
  */
-Variant::operator int32_t()
+Variant::operator int32_t() const
 {
 	switch (type) {
 		case Variant::Tag::t_bool:
@@ -373,7 +373,7 @@ Variant::operator int32_t()
 /**
  * cast (uint64_t)
  */
-Variant::operator uint64_t()
+Variant::operator uint64_t() const
 {
 	switch (type) {
 		case Variant::Tag::t_bool:
@@ -399,7 +399,7 @@ Variant::operator uint64_t()
 /**
  * cast (int64_t)
  */
-Variant::operator int64_t()
+Variant::operator int64_t() const
 {
 	switch (type) {
 		case Variant::Tag::t_bool:

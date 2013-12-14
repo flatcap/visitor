@@ -19,6 +19,7 @@
 #define _CONTAINER_H_
 
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -43,9 +44,6 @@ public:
 
 	CPtr copy (void) const;
 
-	int get_size (void) const;
-	int set_size (int value);
-
 	int add_child (CPtr child);
 	void remove_child (size_t index);
 
@@ -54,6 +52,43 @@ public:
 	std::string name;
 
 	int get_seqnum (void);
+
+	void set_type (std::string&& name)
+	{
+		type.insert (std::move (name));
+	}
+
+	void set_prop (const std::string &name, Variant value)
+	{
+		std::cout << "new prop: " << name << " = " << (std::string) value << std::endl;
+		props[name] = std::move (value);
+	}
+
+	void dump_props(void) {
+		std::cout << "Properties:\n";
+		for (auto p : props) {
+			std::cout << '\t' << p.first << " = " << (std::string) p.second << '\n';
+		}
+	}
+
+#if 0
+	const Variant& get_prop (const std::string& name) const
+	{
+		if (props.count (name) == 0)
+			throw "bugger";
+
+		auto& p = const_cast<std::map<std::string,Variant>&>(props);
+
+		return p[name];
+	}
+#endif
+	Variant& get_prop (const std::string& name)
+	{
+		if (props.count (name) == 0)
+			throw "bugger";
+
+		return props[name];
+	}
 
 	friend std::ostream & operator<< (std::ostream &stream, const CPtr &c);
 
@@ -67,10 +102,10 @@ protected:
 
 	std::weak_ptr<Container> weak;
 
-	std::map<std::string,Variant> props;
 private:
-	int size = 0;
 	std::vector<CPtr> children;
+	std::map<std::string,Variant> props;
+	std::set<std::string> type;
 
 	int seqnum = 1;
 };

@@ -39,9 +39,6 @@ public:
 	void swap (Disk& d);
 	friend void swap (Disk& lhs, Disk& rhs);
 
-	std::string get_device (void) const;
-	std::string set_device (const std::string value);
-
 	friend std::ostream & operator<< (std::ostream &stream, const DPtr &c);
 
 protected:
@@ -51,7 +48,9 @@ protected:
 	virtual Disk* clone (void) const;
 
 private:
-	std::string device;
+	int _a;
+	int _b;
+	int _c;
 };
 
 

@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "container.h"
+#include "variant.h"
 
 static int base_seqnum = 1000;
 
@@ -28,8 +29,6 @@ CPtr
 Container::create (void)
 {
 	Container* c = new Container();
-
-	c->name = "container";
 
 	CPtr cp (c);
 
@@ -44,6 +43,10 @@ Container::create (void)
  */
 Container::Container()
 {
+	set_type ("container");
+
+	set_prop ("size", (long)0);
+
 	seqnum = base_seqnum;
 	std::cout << "Container ctor (default): " << seqnum << std::endl;
 	base_seqnum += 1000;
@@ -54,10 +57,10 @@ Container::Container()
  */
 Container::Container (const Container& c) :
 	name (c.name),
-	size (c.size)
+	props (c.props)
 	//don't copy 'weak'
 {
-	std::cout << "Container ctor (copy): " << c.size << std::endl;
+	std::cout << "Container ctor (copy)" << std::endl;
 
 	for (auto child : c.children) {
 		children.push_back (child->copy());
@@ -69,7 +72,7 @@ Container::Container (const Container& c) :
  */
 Container::Container (Container&& c)
 {
-	std::cout << "Container ctor (move): " << c.size << std::endl;
+	std::cout << "Container ctor (move)" << std::endl;
 	swap (c);
 }
 
@@ -80,10 +83,9 @@ Container::Container (Container&& c)
 Container&
 Container::operator= (const Container& c)
 {
-	std::cout << "Container assign (copy): " << size << ", " << c.size << std::endl;
+	std::cout << "Container assign (copy)" << std::endl;
 
 	name     = c.name;
-	size     = c.size;
 	children = c.children;
 	//don't copy 'weak'
 
@@ -96,7 +98,7 @@ Container::operator= (const Container& c)
 Container&
 Container::operator= (Container&& c)
 {
-	std::cout << "Container assign (move): " << size << ", " << c.size << std::endl;
+	std::cout << "Container assign (move)" << std::endl;
 	swap (c);
 	return *this;
 }
@@ -108,8 +110,7 @@ Container::operator= (Container&& c)
 void
 Container::swap (Container& c)
 {
-	std::cout << "Container swap (member): " << size << ", " << c.size << std::endl;
-	std::swap (size, c.size);
+	std::cout << "Container swap (member)" << std::endl;
 	std::swap (children, c.children);
 	std::swap (this->props, c.props);
 }
@@ -119,7 +120,7 @@ Container::swap (Container& c)
  */
 void swap (Container& lhs, Container& rhs)
 {
-	std::cout << "Container swap (global): " << lhs.size << ", " << rhs.size << std::endl;
+	std::cout << "Container swap (global)" << std::endl;
 	lhs.swap (rhs);
 }
 
@@ -130,7 +131,7 @@ void swap (Container& lhs, Container& rhs)
 Container*
 Container::clone (void) const
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	return new Container (*this);
 }
 
@@ -141,7 +142,7 @@ Container::clone (void) const
 CPtr
 Container::copy (void) const
 {
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	Container *c = clone();
 
 	CPtr cp (c);
@@ -149,28 +150,6 @@ Container::copy (void) const
 	c->weak = cp;	// keep a weak pointer to myself
 
 	return cp;
-}
-
-
-/**
- * get_size
- */
-int
-Container::get_size (void) const
-{
-	return size;
-}
-
-/**
- * set_size
- */
-int
-Container::set_size (int value)
-{
-	int old = size;
-	size = value;
-	changed();
-	return old;
 }
 
 
@@ -218,7 +197,7 @@ Container::changed (void)
 	if (seqnum < 1)
 		return;
 
-	//std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	seqnum++;
 }
 

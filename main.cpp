@@ -111,6 +111,8 @@ move_d (void)
 #if 1
 	v = 123.456;
 	std::cout << "d = " << (double)v << std::endl;
+	double d = v;
+	std::cout << "d = " << d << std::endl;
 #endif
 }
 
